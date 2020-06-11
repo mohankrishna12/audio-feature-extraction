@@ -75,9 +75,17 @@ print("Pair-wise MIC's Matrix Shape: ", β.shape(bivariateDependence), "\n")
 bivariateDependencePandas = pd.DataFrame(bivariateDependence)
 # bivariateDependencePandas.head()
 # print("Pair-wise MIC's Matrix in Pandas:", "\n", bivariateDependencePandas, "\n", "Pair-wise Pandas Pearson's Matrix Shape:", β.shape(bivariateDependencePandas), "\n")
-bivariateDependencePandas = bivariateDependencePandas.corr(method='pearson')
-# print("Pair-wise Pandas Pearson's Matrix:", "\n", bivariateDependencePandas, "\n", "Pair-wise Pandas Pearson's Matrix Shape:", β.shape(bivariateDependencePandas), "\n")
+bivariateDependencePandasPearson = bivariateDependencePandas.corr(method='pearson')
+print("Pair-wise Pandas Pearson's Matrix:", "\n", bivariateDependencePandasPearson, "\n",\
+     "Pair-wise Pandas Pearson's Matrix Shape:", β.shape(bivariateDependencePandasPearson), "\n")
 
+bivariateDependencePandasKendall = bivariateDependencePandas.corr(method='kendall')
+print("Pair-wise Pandas Kendall's Matrix:", "\n", bivariateDependencePandasKendall, "\n", \
+    "Pair-wise Pandas Kendall's Matrix Shape:", β.shape(bivariateDependencePandasKendall), "\n")
+
+bivariateDependencePandasSpearman = bivariateDependencePandas.corr(method='spearman')
+print("Pair-wise Pandas Spearman's Matrix:", "\n", bivariateDependencePandasSpearman, "\n", \
+    "Pair-wise Pandas Spearman's Matrix Shape:", β.shape(bivariateDependencePandasSpearman), "\n")
 
 N = electronic.shape[0]
 sA = inPerson.sum(0)
@@ -153,7 +161,10 @@ traceuse.close("all")
 
 
 β.savetxt("/Users/emmanueltoksadeniran/Desktop/Audio_Project/Output_Files/MIC.csv", bivariateDependence, delimiter=",")
-β.savetxt("/Users/emmanueltoksadeniran/Desktop/Audio_Project/Output_Files/PCC.csv", stackedLabelsPCC, delimiter=",", fmt="%s")
+β.savetxt("/Users/emmanueltoksadeniran/Desktop/Audio_Project/Output_Files/Pearson Correlation Coefficient.csv", bivariateDependencePandasPearson, delimiter=",")
+β.savetxt("/Users/emmanueltoksadeniran/Desktop/Audio_Project/Output_Files/Kendall Correlation Coefficient.csv", bivariateDependencePandasKendall, delimiter=",")
+β.savetxt("/Users/emmanueltoksadeniran/Desktop/Audio_Project/Output_Files/Pearson Correlation Coefficient.csv", bivariateDependencePandasSpearman, delimiter=",")
+β.savetxt("/Users/emmanueltoksadeniran/Desktop/Audio_Project/Output_Files/Spearman.csv", stackedLabelsPCC, delimiter=",", fmt="%s")
 
 # β.savetxt("/Users/emmanueltoksadeniran/Desktop/Audio_Project/Output_Files/smallMIC.csv", bivariateDependence, delimiter=",")
 # β.savetxt("/Users/emmanueltoksadeniran/Desktop/Audio_Project/Output_Files/smallPCC.csv", stackedLabelsPCC, delimiter=",", fmt="%s")
