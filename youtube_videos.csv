@@ -1,5 +1,9 @@
-﻿link,start,end,class,split_length
-https://www.youtube.com/watch?v=U5fX9tbA_Tg,0:00,0:35,organic,5
-,0:35,0:39,electronic,5
-,0:40,0:47,organic,5
-,0:47,1:10,electronic,5
+﻿Genre,Show,Title,Description,link,start,end,class,split_length
+News,Last Week Tonight with John Oliver,Coronavirus VIII: Prisons & Jails (HBO),Oliver talking to camera about COVID-19,https://youtu.be/MuxnH0VAkAM,0:00,1:44,organic,5
+,,,CBS news feed on COVID-19 replay,,1:45,2:09,electronic,5
+,,,Oliver talking to camera about prison congestion,,2:13,3:04,organic,5
+,,,CBS 2018 on small prison cells replay,,3:05,3:20,electronic,5
+,,,Oliver talking to camera about difficulty in social distancing,,3:21,3:50,organic,5
+,,,WBALTV news on COVID-19 impact,,3:51,4:09,electronic,5
+,,,Oliver talking to camera about difficulty in social distancing,,4:11,5:00,organic,5
+,,,Mixed news feeds on soap shortage,,5:01,5:26,electronic,5
