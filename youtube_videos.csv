@@ -1,37 +1,72 @@
-﻿Genre,Show,Title,Description,link,start,end,class,split_length
-News,Last Week Tonight with John Oliver,Coronavirus VIII: Prisons & Jails (HBO),Oliver talking to camera about COVID-19,https://youtu.be/MuxnH0VAkAM,0:00,1:44,organic,5
-,,,CBS news feed on COVID-19 replay,,1:45,2:09,electronic,5
-,,,Oliver talking to camera about prison congestion,,2:13,3:04,organic,5
-,,,CBS 2018 on small prison cells replay,,3:05,3:20,electronic,5
-,,,Oliver talking to camera about difficulty in social distancing,,3:21,3:50,organic,5
-,,,WBALTV news on COVID-19 impact,,3:51,4:09,electronic,5
-,,,Oliver talking to camera about difficulty in social distancing,,4:11,5:00,organic,5
-,,,Mixed news feeds on soap shortage,,5:01,5:26,electronic,5
-News,Last Week Tonight with John Oliver,Push Notifications (Web Exclusive),Oliver talking to camera with audience laughs,https://youtu.be/kxatzHnl7Q8,0:01,5:00,organic,5
-News,Last Week Tonight with John Oliver,Brazilian Elections (HBO),Oliver talking about Brazilian events,https://youtu.be/FsZ3p9gOkpY,0:05,0:22,organic,5
-,,,Old British news footage on Carnival,,0:23,0:31,electronic,5
-,,,Oliver responding to previous news footage,,0:32,0:50,organic,5
-,,,Old American news footage on Carnival,,0:51,0:57,electronic,5
-,,,Oliver responding to previous news footage,,0:58,1:10,organic,5
-,,,Oliver talks about importance of Brazilian elections,,1:12,1:46,electronic,5
-,,,Oliver talks about issues with elections,,2:07,2:58,organic,5
-,,,Vice interview clip on homicide rates,,2:59,3:07,electronic,5
-,,,Oliver on Operation Car Wash,,3:07,4:21,organic,5
-,,,CBS news interview on Operation Car Wash,,4:22,4:39,electronic,5
-,,,Oliver talking about citizen disillusionment,,4:40,5:05,organic,5
-News,Last Week Tonight with John Oliver,Equal Rights Amendment (HBO),Oliver talking about equal rights among gender,,0:05,0:24,organic,5
-,,,Inside Edition on upside down McDonalds logo,,0:25,0:33,electronic,5
-,,,Oliver responding to news clip,,0:34,1:30,organic,5
-,,,NBC 1982 news cast on the Equal Rights Amendment,,1:31,1:47,electronic,5
-,,,Oliver talking about equal rights in constitution,,1:48,2:31,organic,5
-,,,NBC 1972 news clip on the unisex amendment,,2:31,2:51,electronic,5
-,,,Oliver talking about ratification process,,2:52,3:31,organic,5
-,,,WTSP 2018 news cast on Florida holding out on amendment,,3:31,3:37,electronic,5
-,,,Oliver talking about passing the ERA,,3:39,4:27,organic,5
-,,,CBS 1973 news cast on ERA,,4:27,4:35,electronic,5
-,,,Oliver talking about opposition to ERA,,4:36,6:11,organic,5
-,,,Today NBC 1972 ERA opposition interview,,6:12,6:33,electronic,5
-,,,Oliver talking about misconceptions of ERA,,6:34,7:05,organic,5
-,,,WLIW21 news clip on ERA opposition speech,,7:06,7:16,electronic,5
-,,,Oliver talking about Schlafly on ERA,,7:17,8:14,organic,5
-,,,WLIW21 1971 Republican conference on abortion,,8:14,8:28,electronic,5
+﻿Genre,Show,Title,Description,link,start,end,class,split_length,Comments
+News,Last Week Tonight with John Oliver,Coronavirus VIII: Prisons & Jails (HBO),Oliver talking to camera about COVID-19,https://youtu.be/MuxnH0VAkAM,0:00,1:44,organic,5,
+,,,CBS news feed on COVID-19 replay,,1:45,2:09,electronic,5,
+,,,Oliver talking to camera about prison congestion,,2:13,3:04,organic,5,
+,,,CBS 2018 on small prison cells replay,,3:05,3:20,electronic,5,
+,,,Oliver talking to camera about difficulty in social distancing,,3:21,3:50,organic,5,
+,,,WBALTV news on COVID-19 impact,,3:51,4:09,electronic,5,
+,,,Oliver talking to camera about difficulty in social distancing,,4:11,5:00,organic,5,
+,,,Mixed news feeds on soap shortage,,5:01,5:26,electronic,5,
+News,Last Week Tonight with John Oliver,Push Notifications (Web Exclusive),Oliver talking to camera with audience laughs,https://youtu.be/kxatzHnl7Q8,0:01,5:00,organic,5,
+News,Last Week Tonight with John Oliver,Brazilian Elections (HBO),Oliver talking about Brazilian events,https://youtu.be/FsZ3p9gOkpY,0:05,0:22,organic,5,
+,,,Old British news footage on Carnival,,0:23,0:31,electronic,5,
+,,,Oliver responding to previous news footage,,0:32,0:50,organic,5,
+,,,Old American news footage on Carnival,,0:51,0:57,electronic,5,
+,,,Oliver responding to previous news footage,,0:58,1:10,organic,5,
+,,,Oliver talks about importance of Brazilian elections,,1:12,1:46,electronic,5,
+,,,Oliver talks about issues with elections,,2:07,2:58,organic,5,
+,,,Vice interview clip on homicide rates,,2:59,3:07,electronic,5,
+,,,Oliver on Operation Car Wash,,3:07,4:21,organic,5,
+,,,CBS news interview on Operation Car Wash,,4:22,4:39,electronic,5,
+,,,Oliver talking about citizen disillusionment,,4:40,5:05,organic,5,
+News,Last Week Tonight with John Oliver,Equal Rights Amendment (HBO),Oliver talking about equal rights among gender,https://youtu.be/bCBYJZ6QbUI,0:05,0:24,organic,5,
+,,,Inside Edition on upside down McDonalds logo,,0:25,0:33,electronic,5,
+,,,Oliver responding to news clip,,0:34,1:30,organic,5,
+,,,NBC 1982 news cast on the Equal Rights Amendment,,1:31,1:47,electronic,5,
+,,,Oliver talking about equal rights in constitution,,1:48,2:31,organic,5,
+,,,NBC 1972 news clip on the unisex amendment,,2:31,2:51,electronic,5,
+,,,Oliver talking about ratification process,,2:52,3:31,organic,5,
+,,,WTSP 2018 news cast on Florida holding out on amendment,,3:31,3:37,electronic,5,
+,,,Oliver talking about passing the ERA,,3:39,4:27,organic,5,
+,,,CBS 1973 news cast on ERA,,4:27,4:35,electronic,5,
+,,,Oliver talking about opposition to ERA,,4:36,6:11,organic,5,
+,,,Today NBC 1972 ERA opposition interview,,6:12,6:33,electronic,5,
+,,,Oliver talking about misconceptions of ERA,,6:34,7:05,organic,5,
+,,,WLIW21 news clip on ERA opposition speech,,7:06,7:16,electronic,5,
+,,,Oliver talking about Schlafly on ERA,,7:17,8:14,organic,5,
+,,,WLIW21 1971 Republican conference on abortion,,8:14,8:28,electronic,5,
+News,Last Week Tonight with John Oliver,Weather (HBO),Oliver introducing topic of weather,https://youtu.be/qMGn9T37eR8,0:05,0:23,organic,5,
+,,,FOX17 2018 clip of weather forecast,,0:24,0:52,electronic,5,
+,,,Oliver on news delivery,,0:53,2:25,organic,5,
+,,,News cast interview about weather data services,,2:25,2:41,electronic,5,
+,,,Oliver on weather data sharing,,2:42,3:56,organic,5,
+,,,Accuweather commerical 1988,,3:57,4:29,electronic,5,
+,,,Oliver on weather graphics and competition,,4:30,4:56,organic,5,
+,,,The Weather Channel example forecast with graphics,,4:57,5:08,electronic,5,Speech isn't primary here
+,,,Oliver on data collection systems,,5:09,5:43,organic,5,
+,,,CNBC 2018 interview with CEO of Accuweather,,5:44,6:01,electronic,5,
+News,Last Week Tonight with John Oliver,,Oliver on the importance of court system,https://youtu.be/9fB0GBwJ2QA,0:01,0:21,organic,5,
+,,,Previews of court TV show case,,0:22,0:52,electronic,5,Several clips being cut and compiled
+,,,Oliver on the importance of immigration courts,,0:53,1:47,organic,5,
+,,,Interview of student on deportation,,1:47,1:55,electronic,5,
+,,,Oliver talks about immigration as a life and death process,,1:56,2:25,organic,5,
+,,,NBC 2017 interview with immigration court judges,,2:26,2:39,electronic,5,
+,,,Oliver on the backlog of immigration cases,,2:40,3:11,organic,5,
+,,,NBC6 2017 news cast on backlog in the courts,,3:12,3:34,electronic,5,
+,,,Oliver on issues of hearing wait time ,,3:35,4:36,organic,5,
+,,,PBS 13 2015 documentary clip on immigration court system,,4:37,4:45,electronic,5,
+,,,Oliver on the issue of legal representation,,4:46,5:13,organic,5,
+,,,KIRO7 2016 news cast on undocumented children,,5:13,5:30,electronic,5,
+,,,Oliver on sending children to court without representation,,5:31,6:11,organic,5,
+,,,2015 voice recording of an immigration judge,,6:12,6:26,electronic,5,
+,,,Oliver responding to opposition for mandating lawyers for children,,6:27,6:53,organic,5,
+,,,2016 child interviews in mock trial,,6:53,7:29,electronic,5,
+,,,2016 child interviews in mock trial,,7:53,8:09,electronic,5,Mostly silence
+,,,Oliver on why children need lawyers,,8:10,8:30,organic,5,
+,,,Reuters 2017 overview of deportation rate,,8:31,8:47,electronic,5,
+,,,Oliver on immigration courts dependent on political changes,,8:48,9:36,organic,5,
+,,,MSNBC 2017 interview on immigration initiatives,,9:37,9:48,electronic,5,
+,,,Oliver on immigration policies promoting domestic violence,,9:49,11:48,organic,5,
+,,,Voice recording of immigration court interview 2013,,11:49,12:23,electronic,5,
+,,,Oliver responding to various court cases,,12:24,13:30,organic,5,
+News,Last Week Tonight with John Oliver,Brexit Update (HBO UK),,https://youtu.be/MdHmp5EX5bE,0:01,6:11,organic,5,
