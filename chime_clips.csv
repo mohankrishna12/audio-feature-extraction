@@ -1,0 +1,4 @@
+file,session,room,start,end,# OF TALKERS,TOTAL TIME,units,channels,split_length
+S02_U01.CH1,2,Kitchen,0:12:45,0:13:55,,0:01:10,1,1,10
+,2,Kitchen,0:14:00,0:35:40,,0:21:40,1,2,10
+,2,Kitchen,0:35:41,0:45:40,,0:09:59,1,4,10
