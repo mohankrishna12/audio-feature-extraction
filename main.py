@@ -51,6 +51,10 @@ classifiers = [
     #QuadraticDiscriminantAnalysis()
 ]
 
+models = [
+
+]
+
 # Split data
 X = df_audio.drop(['target'], axis = 1).values
 y = df_audio['target']
@@ -91,6 +95,7 @@ for name, clf in zip(names, classifiers):
     
     # build classifier model
     y_hat = clf.predict(X_test)
+    model.append(clf) # save model
     
     # compute basic performance metrics
     tn, fp, fn, tp = confusion_matrix(y_test, y_hat).ravel()
