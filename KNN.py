@@ -26,8 +26,8 @@ from scipy import stats
 #dataset = loadtxt('all_features.csv', delimiter=',')
 dataset = pd.read_csv("morechimeandtv.csv")
 podcast = pd.read_csv("podcasttest.csv")
-s18 = pd.read_csv("chimes18test.csv")
-s23 = pd.read_csv("chimes23test.csv")
+#s18 = pd.read_csv("chimes18test.csv")
+#s23 = pd.read_csv("chimes23test.csv")
 
 
 
@@ -195,7 +195,7 @@ for name, model in models:
 	print("wrong: " + str(wrong))
 
 	print(predictions)
-
+'''
 	print("-------------s18 (seen before)------------")
 	predictions = model.predict(s18.to_numpy()[:,0:627])
 	right = 0
@@ -225,7 +225,7 @@ for name, model in models:
 	print("wrong: " + str(wrong))
 
 	print(predictions)
-
+'''
 
 #from joblib import dump,load
 

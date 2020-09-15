@@ -25,9 +25,59 @@ import seaborn as sns
 sns.set_style("ticks")
 sns.set_palette("bright")
 
+from extractors import *
+
 ##################################################
 #            PARSING AUDIO DIRECTORY             #
 ##################################################
+
+def extract_file_features(
+    file, 
+    target,
+    filter_band = False, filter_directory = '', filter_lowcut = 20.0, filter_highcut = 250.0
+):
+    overall_features = []
+    #try:
+    description = pd.DataFrame({
+        'id':[file.split('/')[-1].split('.')[0]],
+        'target':[target]
+    }, index=[0])
+
+    # extract sub-band features
+    filtered_features = pd.DataFrame()
+    if filter_band:
+        print('\t\t extracting frequency band from', file)
+        loc = generate_file_name(filter_directory, file, filter_lowcut, filter_highcut)
+        extract_freq_band(file, filter_lowcut, filter_highcut, loc)
+        print('\t\t saving frequency band as', loc)
+        filtered_features = pd.concat(
+            (
+                extract_librosa_features(loc), 
+                #extract_essentia_features(loc), 
+                extract_hum_features(loc, [[.1, .55], [.1, .25], [.1, .75]]),
+                extract_discontinuity_features(loc), 
+                extract_clicks_features(loc),
+            ), axis = 1).add_prefix('band_')
+        print('\t\t finished extracting features from frequency band')
+    
+    # extract overall spectra features
+    overall_features = pd.concat(
+        (
+            description,
+            extract_librosa_features(file), 
+            #extract_essentia_features(file), 
+            extract_hum_features(file, [[.1, .55], [.1, .25], [.1, .75]]),
+            extract_discontinuity_features(file), 
+            extract_clicks_features(file),
+            #extract_ebm_features(EBM_values.loc[os.path.basename(file), "ebmVal"]),
+            filtered_features
+        ), axis = 1)
+    print('\t\t finished extracting features from overall spectrum')
+
+    #except Exception as ex:
+    #    print(ex)
+
+    return overall_features
 
 def extract_dir_overall_features(
     directory,   # parent directory of main audio files

@@ -2,6 +2,7 @@
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report,confusion_matrix
 from itertools import product
+import pandas as pd
 
 # Classifiers dependencies 
 from sklearn.linear_model import LogisticRegression
@@ -36,4 +37,11 @@ def random_forest(X_Train, X_Test, y_train, y_test, n_estimators=10, max_depth=5
     predictionforest = trainedforest.predict(X_Test)
     print(confusion_matrix(y_test,predictionforest))
     print(classification_report(y_test,predictionforest))
+
+def test(samples, targets, model):
+    predictions = model.predict(samples)
+    print("TEST" + confusion_matrix(targets, predictions).ravel())
+    for i in range(len(samples)):
+	    print("X=%s, Predicted=%s" % (samples[i], targets[i]))
+
 

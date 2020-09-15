@@ -18,7 +18,7 @@ df_audio = read_features_from_file("all_features.csv")
 # o_organic_features = extract_dir_overall_features("audio/Organic/", ['.mp3', '.wav', '.flac'], 1)
 
 # Preprocessing
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, QuantileTransformer
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve, roc_auc_score, precision_recall_curve, f1_score, auc
 from itertools import product
 from sklearn import model_selection
@@ -52,11 +52,12 @@ classifiers = [
 ]
 
 # Split data
-X = df_audio.drop(['target', 'id'], axis = 1).values
+X = df_audio.drop(['target'], axis = 1).values
 y = df_audio['target']
-X = StandardScaler().fit_transform(X)
+X = QuantileTransformer(output_distribution='normal').fit_transform(X)
 X_train, X_test, y_train, y_test = \
     train_test_split(X, y, test_size=.5, random_state=42)
+print("completing dataset test/train split")
 
 # Dataframe components
 scores = []
@@ -74,6 +75,11 @@ prc_aucs = []
 prc_f1_scores = []
 lr_precisions = []
 lr_recalls = []
+
+tests = [
+    { "name": "Other Test", "file": "datasets/morechimeandtv.csv", "results": [] },
+    { "name": "Podcast Test", "file": "datasets/drama_podcast_reality.csv", "results": [] }
+]
 
 for name, clf in zip(names, classifiers):
     
@@ -125,6 +131,19 @@ for name, clf in zip(names, classifiers):
     prc_f1_scores.append(lr_f1_prc)
     no_skill = len(y_test[y_test==1]) / len(y_test)
 
+    # testing suite
+    for test in tests:
+        samples = pd.read_csv(test["file"])
+        samples_X = samples.drop(['target', 'id'], axis = 1).values
+        samples_y = samples['target']
+        samples_X = QuantileTransformer(output_distribution='normal').fit_transform(samples_X)
+        predictions = clf.predict(samples_X)
+        print("TEST (", test["name"], ")", classification_report(samples_y, predictions))
+        tn, fp, fn, tp = confusion_matrix(samples_y, predictions).ravel()
+        test["results"].append((tn + tp) / (tn + fp + fn + tp))
+
+    #test(podcasts_X, podcasts_y, clf)
+
 print("compiling performance dataframe")
 df_performance = pd.DataFrame({
     'classifier': names, 
@@ -142,6 +161,9 @@ df_performance = pd.DataFrame({
     'Precision-Recall AUC': prc_aucs,
     'F1': prc_f1_scores
 })
+
+for test in tests:
+    df_performance[test["name"]] = test["results"]
 
 print("exporting performance dataframe")
 df_performance.to_csv("performance_metrics.csv")
