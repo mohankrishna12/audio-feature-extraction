@@ -1,34 +1,23 @@
-# Dependencies 
+# dependencies 
 from extractors import *
 from parsers import *
 from classifiers import *
 from listen import *
 from helpers import *
 
-# Parsing
-df_audio = read_features_from_file("all_features.csv")
-
-# (Examples)
-# get overall features with mono-tize preprocessing step
-# electronic_features_mono = pd.concat(extract_dir_overall_features("audio/Electronic/", ['.mp3', '.wav', '.flac'], 0, False, True, True, 'audio/tests/Electronic/'))
-# organic_features_mono = pd.concat(extract_dir_overall_features("audio/Organic/", ['.mp3', '.wav', '.flac'], 1, False, True, True, 'audio/tests/Organic/'))
-# chime_features = pd.concat(extract_dir_overall_features("chime/clips/", ['.wav'], 1, False, False, True, 'chime/clips/tests/'))
-# df_audio = pd.concat([electronic_features_mono, organic_features_mono], axis = 0)
-
-# get overall features on all files (mono + stereo)
-# o_electronic_features_stereo = extract_dir_overall_features("audio/Electronic/", ['.mp3', '.wav', '.flac'], 0)
-# o_organic_features = extract_dir_overall_features("audio/Organic/", ['.mp3', '.wav', '.flac'], 1)
-
-# Preprocessing
+# preprocessing
 from sklearn.preprocessing import LabelEncoder, QuantileTransformer
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve, roc_auc_score, precision_recall_curve, f1_score, auc
 from itertools import product
 from sklearn import model_selection
 
-# Naming Classifiers
+# parsing from an existing feature set
+df_audio = read_features_from_file("all_features.csv")
+
+# naming classifiers
 names = [
     'K Nearest Neighbors', 
-    #'Linear SVM', 
+    'Linear SVM', 
     #'RBF SVM',
     #'Gaussian Process', 
     #'Decision Tree', 
@@ -39,10 +28,10 @@ names = [
     #'QDA'
 ]
 
-# Defining Classifier Parameters
+# defining classifier and their parameters
 classifiers = [
     KNeighborsClassifier(3), # number of neighbors = 3
-    #SVC(kernel='linear', C=0.025, probability=True), # linear kernel with regularization/misclassification error = 0.025
+    SVC(kernel='linear', C=0.025, probability=True), # linear kernel with regularization/misclassification error = 0.025
     #SVC(gamma=2, C=0.025, probability=True), # looser SVM with higher regularization
     #GaussianProcessClassifier(1.0 * RBF(1.0)), # RBF kernel
     #DecisionTreeClassifier(max_depth=5),
@@ -53,15 +42,17 @@ classifiers = [
     #QuadraticDiscriminantAnalysis()
 ]
 
+# referenced tests
 tests = [
     { "name": "Other Test", "file": "datasets/morechimeandtv.csv", "results": [] },
     { "name": "Podcast Test", "file": "datasets/drama_podcast_reality.csv", "results": [] }
 ]
 
+# test and train classifiers
 def evaluate_classifiers(names, classifiers, dataset, tests, results):
     models = []
 
-    # Dataframe components
+    # dataframe components
     scores = []
     accuracy_vals = []
     recall_vals = []
@@ -78,7 +69,7 @@ def evaluate_classifiers(names, classifiers, dataset, tests, results):
     lr_precisions = []
     lr_recalls = []
 
-    # Split data
+    # split data into train/test
     X = dataset.drop(['target'], axis = 1).values
     y = dataset['target']
     X = QuantileTransformer(output_distribution='normal').fit_transform(X)
@@ -147,7 +138,8 @@ def evaluate_classifiers(names, classifiers, dataset, tests, results):
             print("TEST (", test["name"], ")", classification_report(samples_y, predictions))
             tn, fp, fn, tp = confusion_matrix(samples_y, predictions).ravel()
             test["results"].append((tn + tp) / (tn + fp + fn + tp))
-        
+    
+    # compile performance metrics into output
     print("compiling performance dataframe")
     df_performance = pd.DataFrame({
         'classifier': names, 
@@ -166,6 +158,7 @@ def evaluate_classifiers(names, classifiers, dataset, tests, results):
         'F1': prc_f1_scores
     })
 
+    # record test evaluations as separate columns
     for test in tests:
         df_performance[test["name"]] = test["results"]
 
@@ -181,37 +174,63 @@ def get_classification(features, clf):
     prediction = clf.predict(sample_X)
     return prediction
 
-# save models
+# save models and their performance evals
 models = evaluate_classifiers(names, classifiers, df_audio, tests, "performance_metrics.csv")
 
 # play and record environmental samples
 fs = 44100  # sample rate
-audio_samples = get_files('tests/', ['.wav']) # files to replay
-write_directory = 'tests/recordings/' # dir to write to
+audio_samples = get_files('tests/', ['.wav']) # samples to play and record
+write_directory = 'tests/recordings/' # dir to write environmental recordings to
 
 # play and record directory of samples --> TODO:( parse --> classify )
 # record_directory(items, write_directory, fs)
 
-# play --> record --> parse --> classify each sample
-# for audio_sample in audio_samples:
+# play --> record --> parse each sample
+for audio_sample in audio_samples:
 
     # get environmental sample
-#    loc = record_file(audio_sample, write_directory, fs)
+    loc = record_file(audio_sample, write_directory, fs)
 
     # extract features from environmental sample
-#    features = extract_file_features(file=loc, target=-1) #, filter_band = True, filter_directory = 'tests/filters/')
-#    features.to_csv("tests/features/" + os.path.splitext(path_leaf(loc))[0] + ".csv")
+    features = extract_file_features(file=loc, target=-1) #, filter_band = True, filter_directory = 'tests/filters/') # DEBUG: update to full parse
+    features.to_csv("tests/features/" + os.path.splitext(path_leaf(loc))[0] + ".csv")
 
-classifications = pd.read_csv("tests/classifications.csv")
-features_directory = "tests/features/"
-new_samples = get_files(directory = features_directory, valid_exts = ['.csv'])
+# get true targets and samples to classify
+classifications = pd.read_csv("tests/classifications.csv")                      # true targets and file pointers to classify
+features_directory = "tests/debug_features/"                                    # dir of feature sets of environmental samples # DEBUG: update to 'test/features/'
+new_samples = get_files(directory = features_directory, valid_exts = ['.csv'])  # collect feature sets
+
+# set up output of results
+df_results = pd.DataFrame()
+df_results["file"] = new_samples    # row for each sample
+for name in names:                  # column for each classifier
+    df_results[name] = 0
+
+# classify environmental samples
+j = 0 # which sample are we evaluating? 
 for new_sample in new_samples:
+
+    # read sample-specific feature set
+    print("reading features of", new_sample)
     features = pd.read_csv(new_sample)
-    for model in models:
+
+    # predict class using each classifier model
+    i = 0 # which model are we evaluating?
+    for model in models:        
         classification = get_classification(features, model)
-        print("PATH LEAF RETURNS (SAMPLE): ", os.path.splitext(path_leaf(new_sample))[0])
-        print("PATH LEAF RETURNS (CLASSI): ", os.path.splitext(path_leaf(classifications['file'][0]))[0])
-        print("TRUE TARGET: ", (classifications.loc[classifications['file'] == (os.path.splitext(path_leaf(new_sample))[0] + ".wav")]["target"])[0])
-        print("EST. CLASSI: ", classification[0])
+        print(
+            "MODEL:", model,
+            "SAMP:", (os.path.splitext(path_leaf(new_sample))[0] + ".wav"),
+            "LOCA:", (classifications.loc[classifications['file'] == (os.path.splitext(path_leaf(new_sample))[0] + ".wav")].iloc[0]["target"]),
+            "CORR:", (classification[0] == (classifications.loc[classifications['file'] == (os.path.splitext(path_leaf(new_sample))[0] + ".wav")].iloc[0]["target"]))
+        )
+        
+        # write whether the classifier got it right (1 = True, 0 = False)
+        df_results.at[j, names[i]] = int(classification[0] == classifications.loc[classifications['file'] == (os.path.splitext(path_leaf(new_sample))[0] + ".wav")].iloc[0]["target"])
+        i = i + 1
+    j = j + 1
+
+# compile results output
+df_results.to_csv("tests/results.csv")
 
 print("DONE.")

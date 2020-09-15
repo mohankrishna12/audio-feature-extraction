@@ -99,7 +99,7 @@ def extract_file_features(
             description,
             extract_librosa_features(file)
         ), axis = 1)
-    print('\t\t finished extracting features from overall spectrum')
+    print('\tfinished extracting features from overall spectrum')
     return overall_features
 
 def extract_dir_overall_features(
