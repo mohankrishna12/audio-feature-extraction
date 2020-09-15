@@ -3,6 +3,7 @@ from extractors import *
 from parsers import *
 from classifiers import *
 from listen import *
+from helpers import *
 
 # Parsing
 df_audio = read_features_from_file("all_features.csv")
@@ -184,27 +185,33 @@ def get_classification(features, clf):
 models = evaluate_classifiers(names, classifiers, df_audio, tests, "performance_metrics.csv")
 
 # play and record environmental samples
-# fs = 44100  # sample rate
-# items = get_files('tests/', ['.wav']) # files to replay
-# write_directory = 'tests/recordings/' # dir to write to
+fs = 44100  # sample rate
+audio_samples = get_files('tests/', ['.wav']) # files to replay
+write_directory = 'tests/recordings/' # dir to write to
 
-# record(items, write_directory, fs)
+# play and record directory of samples --> TODO:( parse --> classify )
+# record_directory(items, write_directory, fs)
 
-# extract features
-# features = extract_file_features(file="tests/recordings/0-0.wav", target=-1, filter_band=True)
-# print(features)
+# play --> record --> parse --> classify each sample
+# for audio_sample in audio_samples:
+
+    # get environmental sample
+#    loc = record_file(audio_sample, write_directory, fs)
+
+    # extract features from environmental sample
+#    features = extract_file_features(file=loc, target=-1) #, filter_band = True, filter_directory = 'tests/filters/')
+#    features.to_csv("tests/features/" + os.path.splitext(path_leaf(loc))[0] + ".csv")
 
 classifications = pd.read_csv("tests/classifications.csv")
 features_directory = "tests/features/"
 new_samples = get_files(directory = features_directory, valid_exts = ['.csv'])
 for new_sample in new_samples:
     features = pd.read_csv(new_sample)
-    classification = get_classification(features, models[0])
-    print("PATH LEAF RETURNS (SAMPLE): ", os.path.splitext(path_leaf(new_sample))[0])
-    print("PATH LEAF RETURNS (CLASSI): ", os.path.splitext(path_leaf(classifications['file'][0]))[0])
-    print("TRUE TARGET: ", (classifications.loc[classifications['file'] == (os.path.splitext(path_leaf(new_sample))[0] + ".wav")]["target"])[0])
-    print("EST. CLASSI: ", classification[0])
-
-#print(get_classification(test_item, models[0]))
+    for model in models:
+        classification = get_classification(features, model)
+        print("PATH LEAF RETURNS (SAMPLE): ", os.path.splitext(path_leaf(new_sample))[0])
+        print("PATH LEAF RETURNS (CLASSI): ", os.path.splitext(path_leaf(classifications['file'][0]))[0])
+        print("TRUE TARGET: ", (classifications.loc[classifications['file'] == (os.path.splitext(path_leaf(new_sample))[0] + ".wav")]["target"])[0])
+        print("EST. CLASSI: ", classification[0])
 
 print("DONE.")

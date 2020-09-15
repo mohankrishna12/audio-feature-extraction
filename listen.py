@@ -1,6 +1,8 @@
 import pandas as pd 
 import numpy as np
 
+from helpers import *
+
 # file support
 import os
 from os import listdir
@@ -26,7 +28,32 @@ def remove_leading_silence(sound, silence_threshold=-50.0, chunk_size=10):
         trim_ms += chunk_size
     return trim_ms
 
-def record(items, write_directory, fs = 44100):
+def record_file(item, write_directory, fs=44100):
+    print('creating replay of', item)
+
+    # determine recording duration
+    audio = AudioSegment.from_file(item, format='wav')
+    input_duration = audio.duration_seconds
+
+    # generate output path
+    loc = write_directory + path_leaf(item)
+
+    # load audio file as array
+    data, _ = sf.read(item, dtype='float64')
+
+    # record audio file
+    recording = sd.rec(int(math.ceil(input_duration * fs)), samplerate=fs, channels=2)
+    sd.wait()
+    
+    # play audio file
+    sd.play(data, fs, blocking=True)
+
+    # write first-draft recording
+    wav.write(loc, fs, recording)
+
+    return loc
+
+def record_directory(items, write_directory, fs = 44100):
     # devices = sd.query_devices()
     # for device in devices:
     #    try:

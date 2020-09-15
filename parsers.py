@@ -26,6 +26,8 @@ sns.set_style("ticks")
 sns.set_palette("bright")
 
 from extractors import *
+from helpers import *
+
 
 ##################################################
 #            PARSING AUDIO DIRECTORY             #
@@ -77,6 +79,27 @@ def extract_file_features(
     #except Exception as ex:
     #    print(ex)
 
+    return overall_features
+
+# minimal features -- librosa only
+def extract_file_features(
+    file, 
+    target
+):
+    overall_features = []
+    #try:
+    description = pd.DataFrame({
+        'id':[file.split('/')[-1].split('.')[0]],
+        'target':[target]
+    }, index=[0])
+
+    # extract spectra features
+    overall_features = pd.concat(
+        (
+            description,
+            extract_librosa_features(file)
+        ), axis = 1)
+    print('\t\t finished extracting features from overall spectrum')
     return overall_features
 
 def extract_dir_overall_features(
