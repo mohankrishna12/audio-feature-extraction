@@ -2,6 +2,7 @@
 from extractors import *
 from parsers import *
 from classifiers import *
+from listen import *
 
 # Parsing
 df_audio = read_features_from_file("all_features.csv")
@@ -51,9 +52,7 @@ classifiers = [
     #QuadraticDiscriminantAnalysis()
 ]
 
-models = [
-
-]
+models = []
 
 # Split data
 X = df_audio.drop(['target'], axis = 1).values
@@ -95,7 +94,7 @@ for name, clf in zip(names, classifiers):
     
     # build classifier model
     y_hat = clf.predict(X_test)
-    model.append(clf) # save model
+    models.append(clf) # save model
     
     # compute basic performance metrics
     tn, fp, fn, tp = confusion_matrix(y_test, y_hat).ravel()
@@ -147,8 +146,38 @@ for name, clf in zip(names, classifiers):
         tn, fp, fn, tp = confusion_matrix(samples_y, predictions).ravel()
         test["results"].append((tn + tp) / (tn + fp + fn + tp))
 
-    #test(podcasts_X, podcasts_y, clf)
+# test on models
+def get_classification(features, clf):
+    sample_X = features.drop(['target', 'id'], axis = 1).values
+    #sample_X = QuantileTransformer(output_distribution='normal').fit_transform(sample_X)
+    prediction = clf.predict(sample_X)
+    return prediction
 
+# play and record environmental samples
+# fs = 44100  # sample rate
+# items = get_files('tests/', ['.wav']) # files to replay
+# write_directory = 'tests/recordings/' # dir to write to
+
+# record(items, write_directory, fs)
+
+# extract features
+# features = extract_file_features(file="tests/recordings/0-0.wav", target=-1, filter_band=True)
+# print(features)
+
+classifications = pd.read_csv("tests/classifications.csv")
+features_directory = "tests/features/"
+new_samples = get_files(directory = features_directory, valid_exts = ['.csv'])
+for new_sample in new_samples:
+    features = pd.read_csv(new_sample)
+    classification = get_classification(features, models[0])
+    print("PATH LEAF RETURNS (SAMPLE): ", os.path.splitext(path_leaf(new_sample))[0])
+    print("PATH LEAF RETURNS (CLASSI): ", os.path.splitext(path_leaf(classifications['file'][0]))[0])
+    print("TRUE TARGET: ", (classifications.loc[classifications['file'] == (os.path.splitext(path_leaf(new_sample))[0] + ".wav")]["target"])[0])
+    print("EST. CLASSI: ", classification[0])
+
+#print(get_classification(test_item, models[0]))
+
+'''
 print("compiling performance dataframe")
 df_performance = pd.DataFrame({
     'classifier': names, 
@@ -172,5 +201,6 @@ for test in tests:
 
 print("exporting performance dataframe")
 df_performance.to_csv("performance_metrics.csv")
+'''
 
 print("DONE.")

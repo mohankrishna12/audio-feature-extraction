@@ -12,17 +12,11 @@ import soundfile as sf
 import scipy.io.wavfile as wav
 import math
 
-from parsers import extract_file_features
-
 # experiencing 'file not found error' with pydub's AudioSegment...
 # install either of the following libraries
 # libav using 'apt-get install libav-tools libavcodec-extra'
 # ffmpeg using 'apt-get install ffmpeg libavcodec-extra'
 from pydub import AudioSegment
-
-classifications = pd.read_csv("tests/classifications.csv")
-for item in classifications["file"]:
-    print(item)
 
 # silence threshold in dB
 def remove_leading_silence(sound, silence_threshold=-50.0, chunk_size=10):
@@ -31,18 +25,6 @@ def remove_leading_silence(sound, silence_threshold=-50.0, chunk_size=10):
     while sound[trim_ms:trim_ms+chunk_size].dBFS < silence_threshold and trim_ms < len(sound):
         trim_ms += chunk_size
     return trim_ms
-
-# extract file name without extension
-def path_leaf(path):
-    head, tail = os.path.split(path)
-    return tail or os.path.basename(head)
-
-# returns an array of all files with extension types in given directory
-def get_files(directory, valid_exts):
-    return ([directory + x for x in 
-       [f for f in listdir(directory) if (isfile(join(directory, f)) # get files only
-       and bool([ele for ele in valid_exts if(ele in f)])) ]         # with valid extension
-      ])
 
 def record(items, write_directory, fs = 44100):
     # devices = sd.query_devices()
@@ -97,17 +79,3 @@ def record(items, write_directory, fs = 44100):
     #        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
     #        message = template.format(type(ex).__name__, ex.args)
     #        print(message)
-
-
-# play and record environmental samples
-#fs = 44100  # sample rate
-#items = get_files('tests/', ['.wav']) # files to replay
-#write_directory = 'tests/recordings/' # dir to write to
-
-#record(items, write_directory, fs)
-
-# extract features
-features = extract_file_features(file="tests/recordings/0-0.wav", target=0, filter_band=True)
-print(features)
-
-# test on models
