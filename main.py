@@ -11,6 +11,7 @@ from sklearn.metrics import classification_report, confusion_matrix, roc_curve, 
 from itertools import product
 from sklearn import model_selection
 
+'''
 # parsing from an existing feature set
 df_audio = read_features_from_file("all_features.csv")
 
@@ -232,5 +233,5 @@ for new_sample in new_samples:
 
 # compile results output
 df_results.to_csv("live tests/results.csv")
-
+'''
 print("DONE.")
