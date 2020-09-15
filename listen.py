@@ -43,7 +43,7 @@ def record_file(item, write_directory, fs=44100):
 
     # record audio file
     recording = sd.rec(int(math.ceil(input_duration * fs)), samplerate=fs, channels=2)
-    sd.wait()
+    #sd.wait()
     
     # play audio file
     sd.play(data, fs, blocking=True)

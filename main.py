@@ -11,6 +11,14 @@ from sklearn.metrics import classification_report, confusion_matrix, roc_curve, 
 from itertools import product
 from sklearn import model_selection
 
+# play and record environmental samples
+fs = 44100  # sample rate
+audio_samples = get_files('notebooks/youtube/', ['.wav']) # samples to play and record
+write_directory = 'notebooks/youtube/recordings/' # dir to write environmental recordings to
+
+# play and record directory of samples --> TODO:( parse --> classify )
+record_directory(audio_samples, write_directory, fs)
+
 '''
 # parsing from an existing feature set
 df_audio = read_features_from_file("all_features.csv")
