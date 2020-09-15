@@ -44,8 +44,8 @@ classifiers = [
 
 # referenced tests
 tests = [
-    { "name": "Other Test", "file": "datasets/morechimeandtv.csv", "results": [] },
-    { "name": "Podcast Test", "file": "datasets/drama_podcast_reality.csv", "results": [] }
+    { "name": "Other Test", "file": "test sets/morechimeandtv.csv", "results": [] },
+    { "name": "Podcast Test", "file": "test sets/drama_podcast_reality.csv", "results": [] }
 ]
 
 # test and train classifiers
@@ -179,8 +179,8 @@ models = evaluate_classifiers(names, classifiers, df_audio, tests, "performance_
 
 # play and record environmental samples
 fs = 44100  # sample rate
-audio_samples = get_files('tests/', ['.wav']) # samples to play and record
-write_directory = 'tests/recordings/' # dir to write environmental recordings to
+audio_samples = get_files('live tests/', ['.wav']) # samples to play and record
+write_directory = 'live tests/recordings/' # dir to write environmental recordings to
 
 # play and record directory of samples --> TODO:( parse --> classify )
 # record_directory(items, write_directory, fs)
@@ -192,12 +192,12 @@ for audio_sample in audio_samples:
     loc = record_file(audio_sample, write_directory, fs)
 
     # extract features from environmental sample
-    features = extract_file_features(file=loc, target=-1) #, filter_band = True, filter_directory = 'tests/filters/') # DEBUG: update to full parse
-    features.to_csv("tests/features/" + os.path.splitext(path_leaf(loc))[0] + ".csv")
+    features = extract_file_features(file=loc, target=-1) #, filter_band = True, filter_directory = 'live tests/filters/') # DEBUG: update to full parse
+    features.to_csv("live tests/features/" + os.path.splitext(path_leaf(loc))[0] + ".csv")
 
 # get true targets and samples to classify
-classifications = pd.read_csv("tests/classifications.csv")                      # true targets and file pointers to classify
-features_directory = "tests/debug_features/"                                    # dir of feature sets of environmental samples # DEBUG: update to 'test/features/'
+classifications = pd.read_csv("live tests/classifications.csv")                 # true targets and file pointers to classify
+features_directory = "live tests/debug/"                                        # dir of feature sets of environmental samples # DEBUG: update to 'test/features/'
 new_samples = get_files(directory = features_directory, valid_exts = ['.csv'])  # collect feature sets
 
 # set up output of results
@@ -231,6 +231,6 @@ for new_sample in new_samples:
     j = j + 1
 
 # compile results output
-df_results.to_csv("tests/results.csv")
+df_results.to_csv("live tests/results.csv")
 
 print("DONE.")
