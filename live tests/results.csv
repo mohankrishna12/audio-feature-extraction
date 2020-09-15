@@ -1,0 +1,8 @@
+,file,K Nearest Neighbors,Linear SVM
+0,live tests/debug/0-0.csv,0,1
+1,live tests/debug/1-5.csv,0,1
+2,live tests/debug/2-10.csv,0,1
+3,live tests/debug/3-15.csv,0,0
+4,live tests/debug/4-20.csv,1,0
+5,live tests/debug/5-25.csv,1,0
+6,live tests/debug/6-40.csv,1,1
