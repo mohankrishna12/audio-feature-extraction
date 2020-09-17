@@ -11,6 +11,10 @@ from sklearn.metrics import classification_report, confusion_matrix, roc_curve, 
 from itertools import product
 from sklearn import model_selection
 
+# classifiers
+import joblib
+
+'''
 # play and record environmental samples
 fs = 44100  # sample rate
 audio_samples = get_files('notebooks/youtube/', ['.wav']) # samples to play and record
@@ -20,6 +24,7 @@ write_directory = 'notebooks/youtube/recordings/' # dir to write environmental r
 record_directory(audio_samples, write_directory, fs)
 
 '''
+
 # parsing from an existing feature set
 df_audio = read_features_from_file("all_features.csv")
 
@@ -176,16 +181,14 @@ def evaluate_classifiers(names, classifiers, dataset, tests, results):
 
     return models
 
-# get predicted class of newly recorded sample
-def get_classification(features, clf):
-    sample_X = features.drop(['target', 'id'], axis = 1).values
-    #sample_X = QuantileTransformer(output_distribution='normal').fit_transform(sample_X)
-    prediction = clf.predict(sample_X)
-    return prediction
-
 # save models and their performance evals
 models = evaluate_classifiers(names, classifiers, df_audio, tests, "performance_metrics.csv")
+for i in range(0, len(models)):
+    filename = 'models/' + names[i] +  '.sav'
+    joblib.dump(models[i], filename)
+    print("saved model:", filename)
 
+'''
 # play and record environmental samples
 fs = 44100  # sample rate
 audio_samples = get_files('live tests/', ['.wav']) # samples to play and record

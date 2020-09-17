@@ -44,4 +44,9 @@ def test(samples, targets, model):
     for i in range(len(samples)):
 	    print("X=%s, Predicted=%s" % (samples[i], targets[i]))
 
-
+# get predicted class of newly recorded sample
+def get_classification(features, clf):
+    sample_X = features.drop(['target', 'id'], axis = 1).values
+    #sample_X = QuantileTransformer(output_distribution='normal').fit_transform(sample_X)
+    prediction = clf.predict(sample_X)
+    return prediction

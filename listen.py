@@ -7,6 +7,7 @@ from helpers import *
 import os
 from os import listdir
 from os.path import isfile, join, basename, splitext
+from time import time
 
 # audio manipulation
 import sounddevice as sd
@@ -51,6 +52,18 @@ def record_file(item, write_directory, fs=44100):
     # write first-draft recording
     wav.write(loc, fs, recording)
 
+    return loc
+
+def listen(seconds, fs, directory, overwrite=True):
+    recording = sd.rec(int(seconds * fs), samplerate=fs, channels=2)
+    print("Recording...")
+    sd.wait()
+    loc = ""
+    if overwrite:
+        loc = directory + "test.wav"
+    else:
+        loc = directory + int(time()) + ".wav"
+    wav.write(loc, fs, recording)
     return loc
 
 def record_directory(items, write_directory, fs = 44100):
