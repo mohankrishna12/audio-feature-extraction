@@ -17,7 +17,7 @@ import joblib
 '''
 # play and record environmental samples
 fs = 44100  # sample rate
-audio_samples = get_files('notebooks/youtube/', ['.wav']) # samples to play and record
+audio_samples = get_files('notebooks/youtube/clips/', ['.wav']) # samples to play and record
 write_directory = 'notebooks/youtube/recordings/' # dir to write environmental recordings to
 
 # play and record directory of samples --> TODO:( parse --> classify )
