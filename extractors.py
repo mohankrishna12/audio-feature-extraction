@@ -35,16 +35,19 @@ def extract_essentia_features(audio):
         lowlevelStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
         rhythmStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
         tonalStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'])(audio)
-        
-        feature_vals = []
-        
-        for feature in features.descriptorNames():
-            if isinstance(features[feature], (float, int)):
-                spectral_df[feature] = 0.
-                feature_vals.append(features[feature])
-            else: break
-                
-        spectral_df.loc[0] = feature_vals
+    except Exception as ex:
+        print(ex)
+        return 'silent'    
+    feature_vals = []
+    
+    for feature in features.descriptorNames():
+        if isinstance(features[feature], (float, int)):
+            spectral_df[feature] = 0.
+            feature_vals.append(features[feature])
+        else: break
+            
+    spectral_df.loc[0] = feature_vals
+    ''' # HANDLING ERROR USING PLACEHOLDER AUDIO
     except Exception as ex:
         features, _ = es.MusicExtractor(
         lowlevelStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
@@ -59,7 +62,7 @@ def extract_essentia_features(audio):
                 
         # spectral_df.loc[0] = feature_vals
         print("Trying to estimate tuning from empty frequency set. Using placeholder audio instead to get feature names.")
-    
+    '''
     return spectral_df.fillna(spectral_df.mean())
 
 ##################################################

@@ -45,6 +45,10 @@ def extract_file_features(
         'target':[target]
     }, index=[0])
 
+    # check if file is silent
+    essentia_features = extract_essentia_features(file)
+    if(isinstance(essentia_features,str)): return 'silent'
+
     # extract sub-band features
     filtered_features = pd.DataFrame()
     if filter_band:
@@ -67,11 +71,11 @@ def extract_file_features(
         (
             description,
             extract_librosa_features(file), 
-            #extract_essentia_features(file), 
-            #extract_hum_features(file, [[.1, .55], [.1, .25], [.1, .75]]),
-            #extract_discontinuity_features(file), 
-            #extract_clicks_features(file),
-            #extract_ebm_features(EBM_values.loc[os.path.basename(file), "ebmVal"]),
+            # essentia_features, 
+            # extract_hum_features(file, [[.1, .55], [.1, .25], [.1, .75]]),
+            # extract_discontinuity_features(file), 
+            # extract_clicks_features(file),
+            # extract_ebm_features(EBM_values.loc[os.path.basename(file), "ebmVal"]),
             filtered_features
         ), axis = 1)
     print('\t\t finished extracting features from overall spectrum')
@@ -145,6 +149,10 @@ def extract_dir_overall_features(
                 curr_file = mono_filename
                 print('\t\t finished mono parsing')
             
+            # check if file is silent
+            essentia_features = extract_essentia_features(curr_file)
+            if(isinstance(essentia_features,str)): return 'silent'
+
             # extract sub-band features
             filtered_features = pd.DataFrame()
             if filter_band:
@@ -165,7 +173,7 @@ def extract_dir_overall_features(
             overall_features = pd.concat(
                 (description,
                  extract_librosa_features(curr_file), 
-                 extract_essentia_features(curr_file), 
+                 essentia_features,
                  extract_hum_features(curr_file, [[.1, .55], [.1, .25], [.1, .75]]),
                  extract_discontinuity_features(curr_file), 
                  extract_clicks_features(curr_file),
