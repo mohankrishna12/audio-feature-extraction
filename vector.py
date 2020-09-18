@@ -45,6 +45,7 @@ def main():
             elif (prediction == -1):
                 print("(SILENT) Set Vector's eye color to YELLOW...")
                 robot.behavior.set_eye_color(hue=0.11, saturation=0.95)
+            
             time.sleep(3.0)
 
 if __name__ == '__main__':
