@@ -4,6 +4,7 @@ from sklearn.metrics import classification_report,confusion_matrix
 from itertools import product
 import pandas as pd
 import numpy as np
+import joblib
 
 # Classifiers dependencies 
 from sklearn.linear_model import LogisticRegression
@@ -24,7 +25,7 @@ from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, QuantileTransformer
 from sklearn.model_selection import train_test_split
 
 def logistic_regression(X_Train, X_Test, y_train, y_test):
@@ -48,6 +49,22 @@ def test(samples, targets, model):
 # get predicted class of newly recorded sample
 def get_classification(features, clf):
     sample_X = np.nan_to_num(features.drop(['target', 'id'], axis = 1).values)
-    #sample_X = QuantileTransformer(output_distribution='normal').fit_transform(sample_X)
+    sample_X = QuantileTransformer(output_distribution='normal').fit_transform(sample_X)
     prediction = clf.predict(sample_X)
     return prediction
+
+def sum_classification(features, clfs, libfile = True):
+    total = 0.
+    if libfile: # classifiers are passed as lib files
+        for clf in clfs:
+            print("loading " + clf)
+            model = joblib.load(clf)
+            prediction = get_classification(features, model)
+            print(clf, "-->", prediction)
+            total = total + prediction
+    else: # classifiers are passed as objects
+        for clf in clfs:
+            prediction = get_classification(features, clf)
+            print(type(clf), "-->", prediction)
+            total = total + prediction
+    return int(total / len(clfs))

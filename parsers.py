@@ -67,10 +67,10 @@ def extract_file_features(
         (
             description,
             extract_librosa_features(file), 
-            extract_essentia_features(file), 
-            extract_hum_features(file, [[.1, .55], [.1, .25], [.1, .75]]),
-            extract_discontinuity_features(file), 
-            extract_clicks_features(file),
+            #extract_essentia_features(file), 
+            #extract_hum_features(file, [[.1, .55], [.1, .25], [.1, .75]]),
+            #extract_discontinuity_features(file), 
+            #extract_clicks_features(file),
             #extract_ebm_features(EBM_values.loc[os.path.basename(file), "ebmVal"]),
             filtered_features
         ), axis = 1)

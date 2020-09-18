@@ -44,7 +44,7 @@ names = [
 
 # defining classifier and their parameters
 classifiers = [
-    KNeighborsClassifier(3), # number of neighbors = 3
+    KNeighborsClassifier(4), # number of neighbors = 4
     SVC(kernel='linear', C=0.025, probability=True), # linear kernel with regularization/misclassification error = 0.025
     SVC(gamma=2, C=0.025, probability=True), # looser SVM with higher regularization
     GaussianProcessClassifier(1.0 * RBF(1.0)), # RBF kernel
