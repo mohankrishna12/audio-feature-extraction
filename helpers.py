@@ -2,6 +2,7 @@
 import os
 from os import listdir
 from os.path import isfile, join, basename, splitext
+import librosa
 
 ##################################################
 #              AUXILIARY FUNCTIONS               #
@@ -22,8 +23,3 @@ def get_files(directory, valid_exts):
 
 def generate_file_name(outDir, inFile, lowcut, highcut, suffix = "_filtered", extension = ".wav"):
     return outDir + remove_extension(path_leaf(inFile)) + '_' + str(int(lowcut)) + '-' + str(int(highcut)) + suffix + extension
-
-def extract_freq_band(inputAudio, lowcut, highcut, outputDir):
-    original, fs = librosa.load(inputAudio)
-    filtered = filter_signal(original, lowcut, highcut, outputDir, fs)
-    return filtered

@@ -32,28 +32,28 @@ df_audio = read_features_from_file("all_features.csv")
 names = [
     'K Nearest Neighbors', 
     'Linear SVM', 
-    #'RBF SVM',
-    #'Gaussian Process', 
-    #'Decision Tree', 
-    #'Random Forest', 
-    #'Neural Net', 
-    #'AdaBoost', 
-    #'Naive Bayes', 
-    #'QDA'
+    'RBF SVM',
+    'Gaussian Process', 
+    'Decision Tree', 
+    'Random Forest', 
+    'Neural Net', 
+    'AdaBoost', 
+    'Naive Bayes', 
+    'QDA'
 ]
 
 # defining classifier and their parameters
 classifiers = [
     KNeighborsClassifier(3), # number of neighbors = 3
     SVC(kernel='linear', C=0.025, probability=True), # linear kernel with regularization/misclassification error = 0.025
-    #SVC(gamma=2, C=0.025, probability=True), # looser SVM with higher regularization
-    #GaussianProcessClassifier(1.0 * RBF(1.0)), # RBF kernel
-    #DecisionTreeClassifier(max_depth=5),
-    #RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1), # estimators = # of trees in the forest, max_features = # of features to consider when looking for best split
-    #MLPClassifier(alpha=0.025, max_iter=1000), # multilayer perceptron with L2 penalty/regularization = 1, max_iter = limit as solver iterates until convergence
-    #AdaBoostClassifier(), 
-    #GaussianNB(),
-    #QuadraticDiscriminantAnalysis()
+    SVC(gamma=2, C=0.025, probability=True), # looser SVM with higher regularization
+    GaussianProcessClassifier(1.0 * RBF(1.0)), # RBF kernel
+    DecisionTreeClassifier(max_depth=5),
+    RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1), # estimators = # of trees in the forest, max_features = # of features to consider when looking for best split
+    MLPClassifier(alpha=0.025, max_iter=1000), # multilayer perceptron with L2 penalty/regularization = 1, max_iter = limit as solver iterates until convergence
+    AdaBoostClassifier(), 
+    GaussianNB(),
+    QuadraticDiscriminantAnalysis()
 ]
 
 # referenced tests

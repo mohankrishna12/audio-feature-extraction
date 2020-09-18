@@ -1,7 +1,7 @@
 # essentia
-# import essentia
-# from essentia.standard import *
-# import essentia.standard as es
+import essentia
+from essentia.standard import *
+import essentia.standard as es
 
 # librosa
 import librosa
@@ -29,21 +29,36 @@ sns.set_palette("bright")
 #             PARSING WITH ESSENTIA              #
 ##################################################
 def extract_essentia_features(audio):
-    features, feature_frames = es.MusicExtractor(
-    lowlevelStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
-    rhythmStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
-    tonalStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'])(audio)
-    
     spectral_df = pd.DataFrame()
-    feature_vals = []
-    
-    for feature in features.descriptorNames():
-        if isinstance(features[feature], (float, int)):
-            spectral_df[feature] = 0.
-            feature_vals.append(features[feature])
-        else: break
-            
-    spectral_df.loc[0] = feature_vals
+    try:
+        features, feature_frames = es.MusicExtractor(
+        lowlevelStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
+        rhythmStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
+        tonalStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'])(audio)
+        
+        feature_vals = []
+        
+        for feature in features.descriptorNames():
+            if isinstance(features[feature], (float, int)):
+                spectral_df[feature] = 0.
+                feature_vals.append(features[feature])
+            else: break
+                
+        spectral_df.loc[0] = feature_vals
+    except Exception as ex:
+        features, _ = es.MusicExtractor(
+        lowlevelStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
+        rhythmStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
+        tonalStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'])("recordings/placeholder.wav")
+        
+        # fill column with feature names and cells with 0
+        for feature in features.descriptorNames():
+            if isinstance(features[feature], (float, int)):
+                spectral_df[feature] = 0.
+            else: break
+                
+        # spectral_df.loc[0] = feature_vals
+        print("Trying to estimate tuning from empty frequency set. Using placeholder audio instead to get feature names.")
     
     return spectral_df.fillna(spectral_df.mean())
 
@@ -490,3 +505,9 @@ def filter_signal(signal, lowcut, highcut, write_output = '', fs=44100.0):
         except Exception as e:
             print("Cannot write to", write_output, ". Invalid file name passed.")
     return y
+    
+def extract_freq_band(inputAudio, lowcut, highcut, outputDir):
+    original, fs = librosa.load(inputAudio)
+    filtered = filter_signal(original, lowcut, highcut, outputDir, fs)
+    return filtered
+

@@ -3,6 +3,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report,confusion_matrix
 from itertools import product
 import pandas as pd
+import numpy as np
 
 # Classifiers dependencies 
 from sklearn.linear_model import LogisticRegression
@@ -46,7 +47,7 @@ def test(samples, targets, model):
 
 # get predicted class of newly recorded sample
 def get_classification(features, clf):
-    sample_X = features.drop(['target', 'id'], axis = 1).values
+    sample_X = np.nan_to_num(features.drop(['target', 'id'], axis = 1).values)
     #sample_X = QuantileTransformer(output_distribution='normal').fit_transform(sample_X)
     prediction = clf.predict(sample_X)
     return prediction

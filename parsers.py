@@ -1,7 +1,7 @@
 # essentia
-# import essentia
-# from essentia.standard import *
-# import essentia.standard as es
+import essentia
+from essentia.standard import *
+import essentia.standard as es
 
 # librosa
 import librosa
@@ -55,7 +55,7 @@ def extract_file_features(
         filtered_features = pd.concat(
             (
                 extract_librosa_features(loc), 
-                #extract_essentia_features(loc), 
+                extract_essentia_features(loc), 
                 extract_hum_features(loc, [[.1, .55], [.1, .25], [.1, .75]]),
                 extract_discontinuity_features(loc), 
                 extract_clicks_features(loc),
@@ -67,7 +67,7 @@ def extract_file_features(
         (
             description,
             extract_librosa_features(file), 
-            #extract_essentia_features(file), 
+            extract_essentia_features(file), 
             extract_hum_features(file, [[.1, .55], [.1, .25], [.1, .75]]),
             extract_discontinuity_features(file), 
             extract_clicks_features(file),
@@ -82,7 +82,7 @@ def extract_file_features(
     return overall_features
 
 # minimal features -- librosa only
-def extract_file_features(
+def extract_min_features(
     file, 
     target
 ):
@@ -154,7 +154,7 @@ def extract_dir_overall_features(
                 print('\t\t saving frequency band as', loc)
                 filtered_features = pd.concat(
                     (extract_librosa_features(loc), 
-                     #extract_essentia_features(loc), 
+                     extract_essentia_features(loc), 
                      extract_hum_features(loc, [[.1, .55], [.1, .25], [.1, .75]]),
                      extract_discontinuity_features(loc), 
                      extract_clicks_features(loc),
@@ -165,7 +165,7 @@ def extract_dir_overall_features(
             overall_features = pd.concat(
                 (description,
                  extract_librosa_features(curr_file), 
-                 #extract_essentia_features(curr_file), 
+                 extract_essentia_features(curr_file), 
                  extract_hum_features(curr_file, [[.1, .55], [.1, .25], [.1, .75]]),
                  extract_discontinuity_features(curr_file), 
                  extract_clicks_features(curr_file),

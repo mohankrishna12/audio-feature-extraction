@@ -23,9 +23,9 @@ def main():
         time.sleep(.300)
 
         # parse sample # DEBUG
-        # features = extract_file_features(file=sample, target=-1) 
-        # features = extract_file_features(file="live tests/3-15.wav", target=-1) # DEBUG: update to full parse
-        features = pd.read_csv("live tests/debug/3-15.csv")
+        features = extract_file_features(file=sample, target=-1, filter_band = True, filter_directory = rec_directory + 'filtered/') 
+        # features = extract_min_features(file="live tests/3-15.wav", target=-1) # DEBUG: update to full parse
+        # features = pd.read_csv("live tests/debug/3-15.csv")
 
         # classify samples
         clf = joblib.load('models/Linear SVM.sav')
