@@ -192,7 +192,7 @@ def grid_search(X, y, model, fs, model_name, fs_name):
 
     # define the grid
     grid = dict()
-    grid[fs_name + '__k'] = [i+1 for i in range(X.shape[1])]
+    grid[fs_name + '__k'] = [i+1 for i in range(10)] #range(X.shape[1])]
 
     # define the grid search
     search = GridSearchCV(pipeline, grid, scoring='accuracy', n_jobs=-1, cv=cv)
@@ -206,7 +206,7 @@ def grid_search(X, y, model, fs, model_name, fs_name):
 ##################################################
 #                    TESTING                     #
 ##################################################
-
+'''
 dataset = read_features_from_file("all_features.csv")
 
 X = dataset.drop(['target'], axis = 1)
@@ -235,7 +235,7 @@ k_df.to_csv('features_scores.csv')
 print('printing k important features')
 importances = k_df.nlargest(k, 'K')
 print(importances)
-
+'''
 # using selection methods
 # print(univariate_selector(X, y, 5))     # univariate selection
 # print(extratrees_selector(X, y, 5))     # extra trees classifier selection
