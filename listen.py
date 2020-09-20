@@ -21,6 +21,7 @@ import math
 # ffmpeg using 'apt-get install ffmpeg libavcodec-extra'
 from pydub import AudioSegment
 
+
 # silence threshold in dB
 def remove_leading_silence(sound, silence_threshold=-50.0, chunk_size=10):
     trim_ms = 0 # in milliseconds
@@ -44,7 +45,7 @@ def record_file(item, write_directory, fs=44100):
 
     # record audio file
     recording = sd.rec(int(math.ceil(input_duration * fs)), samplerate=fs, channels=2)
-    #sd.wait()
+    sd.wait()
     
     # play audio file
     sd.play(data, fs, blocking=True)
@@ -55,15 +56,21 @@ def record_file(item, write_directory, fs=44100):
     return loc
 
 def listen(seconds, fs, directory, overwrite=True):
-    recording = sd.rec(int(seconds * fs), samplerate=fs, channels=2)
-    print("Recording...")
+    print("* recording...")
+    recording = sd.rec(int(seconds * fs), channels=1)
     sd.wait()
+
     loc = ""
     if overwrite:
         loc = directory + "test.wav"
     else:
-        loc = directory + int(time()) + ".wav"
+        loc = directory + str(int(time())) + ".wav"
     wav.write(loc, fs, recording)
+
+    # print("* replaying audio...")
+    # data, _ = sf.read(loc)
+    # sd.play(data, blocking=True)
+
     return loc
 
 def record_directory(items, write_directory, fs = 44100):
@@ -120,4 +127,6 @@ def record_directory(items, write_directory, fs = 44100):
     #        message = template.format(type(ex).__name__, ex.args)
     #        print(message)
 
-listen(10, 44100, 'recordings/', overwrite=True)
+
+# USAGE
+# listen(5, 44100, 'recordings/', overwrite=False)

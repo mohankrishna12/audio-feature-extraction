@@ -10,7 +10,7 @@ import time
 import anki_vector
 
 fs = 44100
-seconds = 10
+seconds = 5
 rec_directory = "recordings/"
 
 def main():
@@ -21,10 +21,11 @@ def main():
             print("(THINKING = -1) Set Vector's eye color to BLUE...")
             robot.behavior.set_eye_color(hue=0.55, saturation=0.85)
             robot.behavior.set_head_angle(anki_vector.behavior.MAX_HEAD_ANGLE)
+            time.sleep(3.0)
 
             # capture audio from mic
-            sample = listen(seconds, fs, rec_directory, overwrite=True)
-            time.sleep(.300)
+            sample = listen(seconds, fs, rec_directory, overwrite=False)
+            time.sleep(3.0)
 
             # parse sample # DEBUG
             features = extract_file_features(file=sample, target=-1, filter_band = True, filter_directory = rec_directory + 'filtered/') 
