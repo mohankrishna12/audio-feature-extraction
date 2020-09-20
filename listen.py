@@ -119,3 +119,5 @@ def record_directory(items, write_directory, fs = 44100):
     #        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
     #        message = template.format(type(ex).__name__, ex.args)
     #        print(message)
+
+listen(10, 44100, 'recordings/', overwrite=True)

@@ -10,7 +10,7 @@ import time
 import anki_vector
 
 fs = 44100
-seconds = 5
+seconds = 10
 rec_directory = "recordings/"
 
 def main():
@@ -32,7 +32,7 @@ def main():
             # classify samples
             prediction = -1
             if (features != 'silent'):
-                clf = joblib.load('models/Linear SVM.sav')
+                clf = joblib.load('models/K Nearest Neighbors.sav')
                 prediction = get_classification(features, clf)
 
             # output classification

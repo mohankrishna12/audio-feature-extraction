@@ -30,9 +30,9 @@ df_audio = read_features_from_file("all_features.csv")
 
 # naming classifiers
 names = [
-    'K Nearest Neighbors', 
-    'Linear SVM', 
-    'RBF SVM',
+    # 'K Nearest Neighbors', 
+    # 'Linear SVM', 
+    # 'RBF SVM',
     # 'Gaussian Process', 
     'Decision Tree', 
     'Random Forest', 
@@ -44,9 +44,9 @@ names = [
 
 # defining classifier and their parameters
 classifiers = [
-    KNeighborsClassifier(3), # number of neighbors = 3
-    SVC(kernel='linear', C=0.025, probability=True), # linear kernel with regularization/misclassification error = 0.025
-    SVC(gamma=2, C=0.025, probability=True), # looser SVM with higher regularization
+    # KNeighborsClassifier(3), # number of neighbors = 3
+    # SVC(kernel='linear', C=0.025, probability=True), # linear kernel with regularization/misclassification error = 0.025
+    # SVC(gamma=2, C=0.025, probability=True), # looser SVM with higher regularization
     # GaussianProcessClassifier(1.0 * RBF(1.0)), # RBF kernel
     DecisionTreeClassifier(max_depth=5),
     RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1), # estimators = # of trees in the forest, max_features = # of features to consider when looking for best split
@@ -58,12 +58,12 @@ classifiers = [
 
 # referenced tests
 tests = [
-    { "name": "Other Test", "file": "test sets/morechimeandtv.csv", "results": [] },
-    { "name": "Podcast Test", "file": "test sets/drama_podcast_reality.csv", "results": [] }
+#    #{ "name": "Other Test", "file": "test sets/morechimeandtv.csv", "results": [] },
+#    #{ "name": "Podcast Test", "file": "test sets/drama_podcast_reality.csv", "results": [] }
 ]
 
 # test and train classifiers
-def evaluate_classifiers(names, classifiers, dataset, tests, results):
+def evaluate_classifiers(names, classifiers, dataset, tests, output):
     models = []
 
     # dataframe components
@@ -183,6 +183,11 @@ def evaluate_classifiers(names, classifiers, dataset, tests, results):
         prc_f1_scores.append(lr_f1_prc)
         no_skill = len(y_test[y_test==1]) / len(y_test)
 
+        # save model
+        filename = 'models/' + name +  '.sav'
+        joblib.dump(model, filename)
+        print("saved model:", filename)
+
         # testing suite
         for test in tests:
             samples = pd.read_csv(test["file"])
@@ -222,16 +227,16 @@ def evaluate_classifiers(names, classifiers, dataset, tests, results):
         df_performance[test["name"]] = test["results"]
 
     print("exporting performance dataframe")
-    df_performance.to_csv(results)    
+    df_performance.to_csv(output)    
 
     return models
 
 # save models and their performance evals
 models = evaluate_classifiers(names, classifiers, df_audio, tests, "performance_metrics.csv")
-for i in range(0, len(models)):
-    filename = 'models/' + names[i] +  '.sav'
-    joblib.dump(models[i], filename)
-    print("saved model:", filename)
+# for i in range(0, len(models)):
+#    filename = 'models/' + names[i] +  '.sav'
+#    joblib.dump(models[i], filename)
+#    print("saved model:", filename)
 
 '''
 # play and record environmental samples
