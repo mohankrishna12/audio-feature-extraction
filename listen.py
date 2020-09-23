@@ -5,7 +5,7 @@ from helpers import *
 
 # file support
 import os
-from os import listdir
+from os import listdir, path
 from os.path import isfile, join, basename, splitext
 from time import time
 
@@ -73,6 +73,19 @@ def listen(seconds, fs, directory, overwrite=True):
 
     return loc
 
+def playback(sample, write_directory=''):
+    print("* starting playback...")
+
+    loc = write_directory + path_leaf(sample)
+    data, samplerate = sf.read(sample)
+
+    recording = sd.playrec(data, samplerate, channels=2)
+    sd.wait()
+
+    print("* saving playback recording to " + loc + " ...")
+    wav.write(loc, samplerate, recording)
+    return loc
+
 def record_directory(items, write_directory, fs = 44100):
     # devices = sd.query_devices()
     # for device in devices:
@@ -83,50 +96,63 @@ def record_directory(items, write_directory, fs = 44100):
         
     # simultaneous playback and recording
     for item in items:
-        print('creating replay of', item)
         
-        # determine recording duration
-        audio = AudioSegment.from_file(item, format='wav')
-        input_duration = audio.duration_seconds
-
         # generate output path
         loc = write_directory + path_leaf(item)
 
-        # load audio file as array
-        data, _ = sf.read(item, dtype='float64')
+        if (path.exists(loc) == False):
 
-        # record audio file
-        recording = sd.rec(int(math.ceil(input_duration * fs)), samplerate=fs, channels=2)
-        sd.wait()
-        
-        # play audio file
-        sd.play(data, fs, blocking=True)
+            print('creating replay of', item)
 
-        # write first-draft recording
-        wav.write(loc, fs, recording)
+            # determine recording duration
+            # audio = AudioSegment.from_file(item, format='wav')
+            # input_duration = audio.duration_seconds
 
-        # load first-draft recording
-        # sound = AudioSegment.from_file(loc, format='wav')
-        # sound, fs = sf.read(loc, dtype='float64')  
+            # load audio file as array
+            data, samplerate = sf.read(item)
+            print(item, samplerate)
+            # time.sleep(3.0)
+            # simultaneous playback and recording
+            
+            recording = sd.playrec(data, samplerate, channels=2)
+            sd.wait()
+            
+            # record audio file
+            # recording = sd.rec(int(math.ceil(input_duration * fs)), samplerate=fs, channels=2)
+            # sd.wait()
+            
+            # play audio file
+            # sd.play(data, fs, blocking=True)
 
-        # TRIM - (optional) - currently assuming the duration of the input audio is sufficient for its recording
-        # trim start and end silence
-        # start_trim = remove_leading_silence(sound)
-        # end_trim = remove_leading_silence(sound.reverse())
+            # write first-draft recording
+            # print(type(recording))
+            wav.write(loc, fs, recording)
+        else:
+            print(loc + ' already exists. Skipping replay...')
+            # load first-draft recording
+            # sound = AudioSegment.from_file(loc, format='wav')
+            # sound, fs = sf.read(loc, dtype='float64')  
 
-        # output_duration = sound.duration_seconds
-        # trimmed_sound = sound[start_trim:output_duration-end_trim]
+            # TRIM - (optional) - currently assuming the duration of the input audio is sufficient for its recording
+            # trim start and end silence
+            # start_trim = remove_leading_silence(sound)
+            # end_trim = remove_leading_silence(sound.reverse())
 
-        # overwrite first-draft recording
-        # sound.export(loc, format='wav')
-        # scaled = np.int16(sound/np.max(np.abs(sound)) * 32767)
-        # wav.write(loc, fs, scaled)
+            # output_duration = sound.duration_seconds
+            # trimmed_sound = sound[start_trim:output_duration-end_trim]
 
-    #     except Exception as ex:
-    #        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-    #        message = template.format(type(ex).__name__, ex.args)
-    #        print(message)
+            # overwrite first-draft recording
+            # sound.export(loc, format='wav')
+            # scaled = np.int16(sound/np.max(np.abs(sound)) * 32767)
+            # wav.write(loc, fs, scaled)
+
+        #     except Exception as ex:
+        #        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+        #        message = template.format(type(ex).__name__, ex.args)
+        #        print(message)
 
 
 # USAGE
-# listen(5, 44100, 'recordings/', overwrite=False)
+# audio_samples = get_files('notebooks/chime/clips/', ['.wav']) # samples to play and record
+# record_directory(audio_samples, "notebooks/chime/recordings/")
+#listen(5, 44100, 'recordings/', overwrite=False)
