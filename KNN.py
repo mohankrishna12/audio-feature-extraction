@@ -44,7 +44,11 @@ import anki_vector
 #dataset = loadtxt('pima-indians-diabetes.csv', delimiter=',')
 #dataset = loadtxt('all_features.csv', delimiter=',')
 #dataset = pd.read_csv("FINAL.csv")
-dataset = pd.read_csv("emmanuelMODEL.csv")
+dataset = pd.read_csv("finalmodel16bit.csv")
+#dataset = pd.read_csv("emmanuelMODEL.csv")
+meandjoanna = pd.read_csv("5MINCONVOWITHSISRECORDED.csv")
+BASEBALL = pd.read_csv("BASEBALLRECORDED.csv")
+r5mins = pd.read_csv("REBECCACHESSBOOK.csv")
 '''
 podcast = pd.read_csv("podcasttest.csv")
 newpodcast = pd.read_csv("podcastnewtest.csv")
@@ -79,9 +83,11 @@ readtest = pd.read_csv("3minutereadRECORDED.csv")
 
 dataset = dataset.to_numpy()
 #normally 628
-X = dataset[:,1:151]
-y = dataset[:,0]
-
+X = dataset[:,2:152]
+y = dataset[:,1]
+y=y.astype('int')
+#for i in y:
+#	print(i)
 
 from sklearn import model_selection
 from sklearn.linear_model import LogisticRegression
@@ -113,7 +119,7 @@ if bigTests:
 	# Capture audio from through microphone
 	##############################################
 	fs = 44100  # Sample rate
-	seconds = 5  # Duration of recording
+	seconds = 20  # Duration of recording
 	directory = '/home/nick/Documents/audio_features/'
 	print("If you want to record enter y")
 	folder = 'LIVETEST2/'
@@ -152,7 +158,7 @@ if bigTests:
 
 		for i, chunk in enumerate(chunks):
 			#now = datetime.now()
-			chunk_name = 'livetest' + "{0}.wav".format(i)
+			chunk_name = 'joannalive' + "{0}.wav".format(i)
 			print("Exporting...", chunk_name)
 			chunk.export(directory + folder + chunk_name, format="wav")
 
@@ -166,7 +172,7 @@ if bigTests:
 	names = []
 	scoring = 'accuracy'
 	for name, model in models:
-		kfold = model_selection.KFold(n_splits=5, random_state=8)
+		kfold = model_selection.KFold(n_splits=5, random_state=2)
 		
 		qt = QuantileTransformer()
 		Xnew = qt.fit_transform(X)
@@ -199,6 +205,10 @@ if bigTests:
 		silent = 0
 		interactive = 0
 		nonint = 0
+
+		
+		'''
+		
 		for filename in os.listdir(directory + folder):
 			if filename.endswith(".wav") or filename.endswith(".mp3"):
 				print(folder+filename)
@@ -218,29 +228,28 @@ if bigTests:
 					#print(model[0])
 					
 					neigh = model.kneighbors(normData)
-					'''
 					#print(neigh.shape)
-					print("----------HERE------------")
+					#print("----------HERE------------")
 					#print(allFeatures.to_numpy()[:,0:10])
 					#print(neigh)
 					#print(neigh[0])
 					#print(neigh[1])
-					intneighs = 0
-					nonneighs = 0
+					#intneighs = 0
+					#nonneighs = 0
 					#INTINDEX = 1783
-					INTINDEX = 341
-					for i in neigh[1][0]:
-						if i<INTINDEX or (i>=929 and i<=1003):
-							intneighs+=1
-						else:
-							nonneighs+=1
+					#INTINDEX = 341
+					#for i in neigh[1][0]:
+					#	if i<INTINDEX or (i>=929 and i<=1003):
+					#		intneighs+=1
+					#	else:
+					#		nonneighs+=1
 
 						#print(X[i])
 						#print(y[i])
-					print("NUM NEIGHBORS: " + str(len(neigh[1][0])))
-					print("INTERACTIVE NEIGHBORS: " + str(intneighs))
-					print("NON-INTERACTIVE NEIGHBORS: " + str(nonneighs))
-					'''
+					#print("NUM NEIGHBORS: " + str(len(neigh[1][0])))
+					#print("INTERACTIVE NEIGHBORS: " + str(intneighs))
+					#print("NON-INTERACTIVE NEIGHBORS: " + str(nonneighs))
+					
 					import statistics
 					print("AVG DISTANCE: " + str(statistics.mean(neigh[0][0])))
 
@@ -259,15 +268,15 @@ if bigTests:
 		print("NON-INTERACTIVE: " + str(nonint))
 		print("SILENT: " + str(silent))
 		print("*******************************************************************************")
-		
-
+		'''
+	
 		
 	
-	'''
+	
 	silent = 0
 	interactive = 0
 	nonint = 0
-	normData = qt.transform(me.to_numpy()[:,2:152])
+	normData = qt.transform(BASEBALL.to_numpy()[:,2:152])
 	predictions = model.predict(normData)
 	print(predictions)
 	for i in predictions:
@@ -282,6 +291,10 @@ if bigTests:
 	print("SILENT: " + str(silent))
 	print("-----------------------------------------------------------")
 	
+
+
+
+	'''
 	
 
 
