@@ -47,8 +47,9 @@ import anki_vector
 dataset = pd.read_csv("finalmodel16bit.csv")
 #dataset = pd.read_csv("emmanuelMODEL.csv")
 meandjoanna = pd.read_csv("5MINCONVOWITHSISRECORDED.csv")
-BASEBALL = pd.read_csv("BASEBALLRECORDED.csv")
-r5mins = pd.read_csv("REBECCACHESSBOOK.csv")
+FAM = pd.read_csv("REBECCAGASLIGHT.csv")
+Firstake = pd.read_csv("FIRSTTAKERECORDED.csv")
+MCARS = pd.read_csv("MCvARS_RECORDED.csv")
 '''
 podcast = pd.read_csv("podcasttest.csv")
 newpodcast = pd.read_csv("podcastnewtest.csv")
@@ -90,6 +91,7 @@ y=y.astype('int')
 #	print(i)
 
 from sklearn import model_selection
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
@@ -108,11 +110,13 @@ seed = 8
 # prepare models
 models = []
 
-#models.append(('KNN1', KNeighborsClassifier(n_neighbors=3, weights='distance')))
+models.append(('KNN1', KNeighborsClassifier(n_neighbors=3, weights='distance')))
 #models.append(('KNN2', KNeighborsClassifier(weights='distance')))
 #models.append(('KNN3', KNeighborsClassifier()))
-models.append(('KNN4', KNeighborsClassifier(n_neighbors=30, weights='distance')))
-#models.append(('KNN4', KNeighborsClassifier(n_neighbors=7, weights='distance')))
+#models.append(('KNN4', KNeighborsClassifier(n_neighbors=30, weights='distance')))
+#models.append(('QDA', QuadraticDiscriminantAnalysis()))
+#models.append(('DECISION TREE', DecisionTreeClassifier(random_state=0)))
+#models.append(('GaussianNB', GaussianNB()))
 
 bigTests=True
 if bigTests:
@@ -271,28 +275,46 @@ if bigTests:
 		'''
 	
 		
-	
-	
-	silent = 0
-	interactive = 0
-	nonint = 0
-	normData = qt.transform(BASEBALL.to_numpy()[:,2:152])
-	predictions = model.predict(normData)
-	print(predictions)
-	for i in predictions:
-		if(i==0.):
-			interactive+=1
-		else:
-			nonint+=1
+		'''
+		
+		silent = 0
+		interactive = 0
+		nonint = 0
+		normData = qt.transform(meandjoanna.to_numpy()[:,2:152])
+		predictions = model.predict(normData)
+		print(predictions)
+		for i in predictions:
+			if(i==0.):
+				interactive+=1
+			else:
+				nonint+=1
 
-	
-	print("INTERACTIVE: " + str(interactive))
-	print("NON-INTERACTIVE: " + str(nonint))
-	print("SILENT: " + str(silent))
-	print("-----------------------------------------------------------")
+		
+		print("INTERACTIVE: " + str(interactive))
+		print("NON-INTERACTIVE: " + str(nonint))
+		print("SILENT: " + str(silent))
+		print("-----------------------------------------------------------")
+		
+		silent = 0
+		interactive = 0
+		nonint = 0
+		normData = qt.transform(FAM.to_numpy()[:,2:152])
+		predictions = model.predict(normData)
+		print(predictions)
+		for i in predictions:
+			if(i==0.):
+				interactive+=1
+			else:
+				nonint+=1
+
+		
+		print("INTERACTIVE: " + str(interactive))
+		print("NON-INTERACTIVE: " + str(nonint))
+		print("SILENT: " + str(silent))
+		print("-----------------------------------------------------------")
 	
 
-
+		'''
 
 	'''
 	
