@@ -60,9 +60,9 @@ with anki_vector.Robot(args.serial) as robot:
 #with anki_vector.Robot(serial=s,ip=ipaddr,name=name) as robot:
     while True:
 
-        hue = 0.11
-        saturation = 1.00
-        robot.behavior.set_eye_color(hue,saturation) #yellow
+        hue = 0.83
+        saturation = 0.76
+        robot.behavior.set_eye_color(hue,saturation) #purple
         robot.behavior.set_head_angle(anki_vector.behavior.MAX_HEAD_ANGLE)
         # Capture audio from through microphone
         ##############################################
@@ -88,6 +88,10 @@ with anki_vector.Robot(args.serial) as robot:
 
                 if(isinstance(allFeatures,str)):
                     print("------------------------------------------------------\n\n\n\n\n\n\n\nSILENT\n\n\n\n\n\n\n\n------------------------------------------------------")
+                    hue = 0.11
+                    saturation = 1.00
+                    robot.behavior.set_eye_color(hue,saturation) #yellow
+                    time.sleep(3.0)
                 else:
                     normData = qt.transform(allFeatures.to_numpy()[:,2:152])
                     ourPrediction = model.predict(normData)
@@ -95,14 +99,14 @@ with anki_vector.Robot(args.serial) as robot:
 
                     print(ourPrediction)
                     if(ourPrediction==0):
-                        hue = 0.05
+                        hue = 0.01
                         saturation = 0.95
-                        robot.behavior.set_eye_color(hue,saturation) #orange
+                        robot.behavior.set_eye_color(hue,saturation) #red
                         time.sleep(3.0)
                         print("------------------------------------------------------\n\n\n\n\n\n\n\nINTERACTIVE\n\n\n\n\n\n\n\n------------------------------------------------------")
                     else:
-                        hue = 0.83
-                        saturation = 0.76
-                        robot.behavior.set_eye_color(hue,saturation) #purple
+                        hue = 0.42
+                        saturation = 1.00
+                        robot.behavior.set_eye_color(hue,saturation) #green
                         time.sleep(3.0)
                         print("------------------------------------------------------\n\n\n\n\n\n\n\nNOT INTERACTIVE\n\n\n\n\n\n\n\n--------------------------------------------------")
