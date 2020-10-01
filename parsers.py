@@ -11,6 +11,7 @@ import librosa.display
 import os
 from os import listdir
 from os.path import isfile, join, basename, splitext
+import random
 
 # analysis
 import IPython
@@ -177,7 +178,7 @@ def extract_dir_overall_features(
                  extract_hum_features(curr_file, [[.1, .55], [.1, .25], [.1, .75]]),
                  extract_discontinuity_features(curr_file), 
                  extract_clicks_features(curr_file),
-                 extract_ebm_features(EBM_values.loc[os.path.basename(curr_file), "ebmVal"]),
+                 # extract_ebm_features(EBM_values.loc[os.path.basename(curr_file), "ebmVal"]),
                  filtered_features
                 ), axis = 1)
             print('\t\t finished extracting features from overall spectrum')
@@ -187,6 +188,67 @@ def extract_dir_overall_features(
         except Exception as e:
             print(e)
             
+    return all_features
+
+def extract_files_features(
+    files,
+    target,      # directory represents which class
+    filter_band = False, filter_directory = '', filter_lowcut = 20.0, filter_highcut = 250.0): 
+
+    all_features = pd.DataFrame()
+
+    for file in files:
+        print('\tParsing features from', file)
+        # try:
+        # determine target and identifier
+        print('\t\t generating row identifiers')
+        description = pd.DataFrame({
+            'id':[file.split('/')[-1].split('.')[0]],
+            'target':[target]
+        }, index=[0])
+
+        # preprocessing here
+        curr_file = file
+        
+        # check if file is silent
+        essentia_features = extract_essentia_features(curr_file)
+        if(isinstance(essentia_features,str)): continue # return 'silent'
+
+        try:
+            # extract sub-band features
+            filtered_features = pd.DataFrame()
+            if filter_band:
+                print('\t\t extracting frequency band from', curr_file)
+                loc = generate_file_name(filter_directory, file, filter_lowcut, filter_highcut)
+                extract_freq_band(file, filter_lowcut, filter_highcut, loc)
+                print('\t\t saving frequency band as', loc)
+                filtered_features = pd.concat(
+                    (extract_librosa_features(loc), 
+                        extract_essentia_features(loc), 
+                        extract_hum_features(loc, [[.1, .55], [.1, .25], [.1, .75]]),
+                        extract_discontinuity_features(loc), 
+                        extract_clicks_features(loc),
+                    ), axis = 1).add_prefix('band_')
+                print('\t\t finished extracting features from frequency band')
+            
+            # extract overall spectra features
+            overall_features = pd.concat(
+                (description,
+                    extract_librosa_features(curr_file), 
+                    extract_essentia_features(curr_file),
+                    extract_hum_features(curr_file, [[.1, .55], [.1, .25], [.1, .75]]),
+                    extract_discontinuity_features(curr_file), 
+                    extract_clicks_features(curr_file),
+                    # extract_ebm_features(EBM_values.loc[os.path.basename(curr_file), "ebmVal"]),
+                    filtered_features
+                ), axis = 1)
+            print('\t\t finished extracting features from overall spectrum')
+            # add to feature list
+            all_features = all_features.append(overall_features)
+        except Exception as e:
+            print("Encountered error adding " + curr_file + " to the dataframe: " + str(type(e)))
+
+    # features_df = pd.concat(all_features, axis=0)      
     return all_features
 
 ##################################################

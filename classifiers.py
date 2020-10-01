@@ -48,8 +48,9 @@ def test(samples, targets, model):
 
 # get predicted class of newly recorded sample
 def get_classification(features, clf):
-    sample_X = np.nan_to_num(features.drop(['target', 'id'], axis = 1).values)
+    sample_X = np.nan_to_num(features.values) # np.nan_to_num(features.drop(['target', 'id'], axis = 1).values)
     sample_X = QuantileTransformer(output_distribution='normal').fit_transform(sample_X)
+    sample_X = sample_X.reshape(1, -1)
     prediction = clf.predict(sample_X)
     return prediction
 

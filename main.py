@@ -26,34 +26,41 @@ record_directory(audio_samples, write_directory, fs)
 '''
 
 # parsing from an existing feature set
-df_audio = read_features_from_file("all_features.csv")
+df_model_set = read_features_from_file("test sets/finalmodel16bit.csv")
+
+df_audio = read_features_from_file("test sets/all_features.csv")
+df_5 = read_features_from_file("test sets/5s-200.csv")
+df_10 = read_features_from_file("test sets/10s-200.csv")
+df_recordings = read_features_from_file("test sets/5s-200-recordings.csv")
+df_model_set = df_model_set.fillna(0)
+#prefix = "5S_"
 
 # naming classifiers
 names = [
-    # 'K Nearest Neighbors', 
+    'K Nearest Neighbors', 
     # 'Linear SVM', 
     # 'RBF SVM',
     # 'Gaussian Process', 
-    'Decision Tree', 
-    'Random Forest', 
-    'Neural Net', 
-    'AdaBoost', 
-    'Naive Bayes', 
-    'QDA'
+    # 'Decision Tree', 
+    # 'Random Forest', 
+    # 'Neural Net', 
+    # 'AdaBoost', 
+    # 'Naive Bayes', 
+    # 'QDA'
 ]
 
 # defining classifier and their parameters
 classifiers = [
-    # KNeighborsClassifier(3), # number of neighbors = 3
+    KNeighborsClassifier(3), # number of neighbors = 3
     # SVC(kernel='linear', C=0.025, probability=True), # linear kernel with regularization/misclassification error = 0.025
     # SVC(gamma=2, C=0.025, probability=True), # looser SVM with higher regularization
     # GaussianProcessClassifier(1.0 * RBF(1.0)), # RBF kernel
-    DecisionTreeClassifier(max_depth=5),
-    RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1), # estimators = # of trees in the forest, max_features = # of features to consider when looking for best split
-    MLPClassifier(alpha=0.025, max_iter=1000), # multilayer perceptron with L2 penalty/regularization = 1, max_iter = limit as solver iterates until convergence
-    AdaBoostClassifier(), 
-    GaussianNB(),
-    QuadraticDiscriminantAnalysis()
+    # DecisionTreeClassifier(max_depth=5),
+    # RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1), # estimators = # of trees in the forest, max_features = # of features to consider when looking for best split
+    # MLPClassifier(alpha=0.025, max_iter=1000), # multilayer perceptron with L2 penalty/regularization = 1, max_iter = limit as solver iterates until convergence
+    # AdaBoostClassifier(), 
+    # GaussianNB(),
+    # QuadraticDiscriminantAnalysis()
 ]
 
 # referenced tests
@@ -63,7 +70,7 @@ tests = [
 ]
 
 # test and train classifiers
-def evaluate_classifiers(names, classifiers, dataset, tests, output):
+def evaluate_classifiers(names, classifiers, dataset, tests, prefix, output):
     models = []
 
     # dataframe components
@@ -95,6 +102,7 @@ def evaluate_classifiers(names, classifiers, dataset, tests, output):
     for name, clf in zip(names, classifiers):
         print("CLASSIFIER", clf)
         
+        '''
         selector = SelectKBest(score_func=f_classif)
         results = grid_search(X, y, clf, selector, name, "ANOVA")
 
@@ -104,11 +112,15 @@ def evaluate_classifiers(names, classifiers, dataset, tests, output):
 
         print("updating k in feature selection")
         k = np.array(list(results.best_params_.values()))[0] # number of features to select
+        '''
+
+        k = 259 #'all'
         selector = SelectKBest(score_func=f_classif, k=k)
 
         X_train_fs, X_test_fs, fs = \
-            select_features(X_train, y_train, X_test, k, selector)
+             select_features(X_train, y_train, X_test, k, selector)
         clf.fit(X_train_fs, y_train)
+        print("X_TRAINING DIMENSIONS:", X_train_fs)
 
         print('ORIGINAL: %s, REDUCED: %s' % (X_train.shape, X_train_fs.shape))
 
@@ -117,12 +129,12 @@ def evaluate_classifiers(names, classifiers, dataset, tests, output):
         k_df = pd.DataFrame(columns = ['Feature', 'K', 'p'])
         for i in range(len(fs.scores_)):
             k_df = k_df.append({'Feature' : dataset.columns[i], 'K' : fs.scores_[i], 'p' : fs.pvalues_[i]}, ignore_index=True)    
-        k_df.to_csv('models/' + name + '_features_scores.csv')
+        k_df.to_csv('models/' + prefix + name + '_features_scores.csv')
 
         print('printing k important features')
         importances = k_df.nlargest(k, 'K')
-        f = open('models/' + name + '_features.txt', "w")
-        f.write(",".join(importances['Feature']))
+        f = open('models/' + prefix + name + '_features.txt', "w")
+        f.write("&&".join(importances['Feature']))
         f.close()
         print(importances)
 
@@ -161,38 +173,54 @@ def evaluate_classifiers(names, classifiers, dataset, tests, output):
         
         # logistical roc auc
         # lr_probs_roc = clf.predict_proba(X_test)[:, 1]
-        lr_probs_roc = clf.predict_proba(X_test_fs)[:, 1]                
-        lr_auc_roc = roc_auc_score(y_test, lr_probs_roc)
-        logistic_aucs.append(lr_auc_roc)
+        try:
+            lr_probs_roc = clf.predict_proba(X_test_fs)[:, 1]                
+            lr_auc_roc = roc_auc_score(y_test, lr_probs_roc)
+            logistic_aucs.append(lr_auc_roc)
 
-        # no skill roc auc  
-        ns_probs_roc = [0 for _ in range(len(y_test))]                  
-        ns_auc_roc = roc_auc_score(y_test, ns_probs_roc)
-        no_skill_aucs.append(ns_auc_roc)
+            # no skill roc auc  
+            ns_probs_roc = [0 for _ in range(len(y_test))]                  
+            ns_auc_roc = roc_auc_score(y_test, ns_probs_roc)
+            no_skill_aucs.append(ns_auc_roc)
+        except Exception as ex:
+            print(str(type(clf)) + " may not support predicting probabilities:" + str(type(ex)))
+            logistic_aucs.append(-1)
+            no_skill_aucs.append(-1)
 
         # roc auc curves
         # ns_fpr, ns_tpr, _ = roc_curve(y_test, ns_probs)           
         # lr_fpr, lr_tpr, _ = roc_curve(y_test, lr_probs)
         
         # precision-recall curves
-        lr_precision, lr_recall, _ = precision_recall_curve(y_test, lr_probs_roc)
-        lr_precisions.append(lr_precision)
-        lr_recalls.append(lr_recall)
-        lr_f1_prc, lr_auc_prc = f1_score(y_test, y_hat), auc(lr_recall, lr_precision)
-        prc_aucs.append(lr_auc_prc)
-        prc_f1_scores.append(lr_f1_prc)
-        no_skill = len(y_test[y_test==1]) / len(y_test)
+        try:
+            lr_precision, lr_recall, _ = precision_recall_curve(y_test, lr_probs_roc)
+            lr_precisions.append(lr_precision)
+            lr_recalls.append(lr_recall)
+            lr_f1_prc, lr_auc_prc = f1_score(y_test, y_hat), auc(lr_recall, lr_precision)
+        except Exception as ex:
+            print(str(type(clf)) + " may not support predicting probabilities:" + str(type(ex)))
+            lr_precisions.append(-1)
+            lr_recalls.append(-1)
+
+        try:
+            prc_aucs.append(lr_auc_prc)
+            prc_f1_scores.append(lr_f1_prc)
+            no_skill = len(y_test[y_test==1]) / len(y_test)
+        except Exception as ex:
+            print(str(type(clf)) + " may not support predicting probabilities:" + str(type(ex)))
+            prc_aucs.append(-1)
+            prc_f1_scores.append(-1)
 
         # save model
-        filename = 'models/' + name +  '.sav'
-        joblib.dump(model, filename)
+        filename = 'models/' + prefix + name +  '.sav'
+        joblib.dump(clf, filename)
         print("saved model:", filename)
 
         # testing suite
         for test in tests:
             samples = pd.read_csv(test["file"])
             
-            samples_X = samples.drop(['target', 'id'], axis = 1)
+            samples_X = samples.drop(['target'], axis = 1)
             print(importances['Feature'].to_numpy())
             samples_X.drop(samples_X.columns.difference(importances['Feature'].to_numpy()), axis = 1, inplace=True)
             samples_y = samples['target']
@@ -227,12 +255,17 @@ def evaluate_classifiers(names, classifiers, dataset, tests, output):
         df_performance[test["name"]] = test["results"]
 
     print("exporting performance dataframe")
-    df_performance.to_csv(output)    
+    df_performance.to_csv(prefix + output)    
 
     return models
 
 # save models and their performance evals
-models = evaluate_classifiers(names, classifiers, df_audio, tests, "performance_metrics.csv")
+# models_5 = evaluate_classifiers(names, classifiers, df_5, tests, "5S_", "performance_metrics.csv")
+# models_10 = evaluate_classifiers(names, classifiers, df_10, tests, "10S_", "performance_metrics.csv")
+# models_r5 = evaluate_classifiers(names, classifiers, df_recordings, tests, "R-5S_", "performance_metrics.csv")
+
+models_all = evaluate_classifiers(names, classifiers, df_model_set, tests, "ANOVA_KNN_", "ANOVA_KNN_performance.csv")
+
 # for i in range(0, len(models)):
 #    filename = 'models/' + names[i] +  '.sav'
 #    joblib.dump(models[i], filename)

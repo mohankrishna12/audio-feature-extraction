@@ -161,7 +161,7 @@ def evaluate_model(model, X, y):
 # get results of dimensionality results 
 def grid_search_distribution(X, y, k, model, fs, model_name, fs_name, output_loc):
     # define the number of features to evaluate
-    num_features = [i+1 for i in range(20)] # range(X.shape[1])]
+    num_features = [i+1 for i in range(X.shape[1])]
 
     # enumerate each number of features
     results = list()
@@ -192,7 +192,7 @@ def grid_search(X, y, model, fs, model_name, fs_name):
 
     # define the grid
     grid = dict()
-    grid[fs_name + '__k'] = [i+1 for i in range(20)] # range(X.shape[1])]
+    grid[fs_name + '__k'] = [i+1 for i in range(X.shape[1])]
 
     # define the grid search
     search = GridSearchCV(pipeline, grid, scoring='accuracy', n_jobs=-1, cv=cv)

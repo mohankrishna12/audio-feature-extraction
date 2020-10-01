@@ -1,5 +1,5 @@
 # essentia
-import essentia
+import essentia # as es
 from essentia.standard import *
 import essentia.standard as es
 
@@ -32,12 +32,13 @@ def extract_essentia_features(audio):
     spectral_df = pd.DataFrame()
     try:
         features, feature_frames = es.MusicExtractor(
-        lowlevelStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
-        rhythmStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
-        tonalStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'])(audio)
+            lowlevelStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
+            rhythmStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'],
+            tonalStats=['mean', 'stdev', 'var', 'median', 'skew', 'kurt', 'dmean', 'dvar', 'dmean2', 'dvar2', 'cov', 'icov'])(audio)
     except Exception as ex:
         print(ex)
         return 'silent'    
+    
     feature_vals = []
     
     for feature in features.descriptorNames():
@@ -253,13 +254,22 @@ def calculate_hum(audio, quantiles):
     hum_ends = []
     
     for quantile in quantiles: 
+        # try:
         r, freq, sal, starts, ends = es.HumDetector(Q0=quantile[0], Q1=quantile[1])(audio_with_hum)
         quantile_ratios.append(r)
         frequencies.append(freq)
         saliences.append(sal)
         hum_starts.append(starts)
         hum_ends.append(ends)
-    
+        '''
+        except Exception as ex:
+            print("Issue calculating hum:", type(ex))
+            quantile_ratios.append(0)
+            frequencies.append(0)
+            saliences.append(0)
+            hum_starts.append([])
+            hum_ends.append([])
+        '''
     return quantile_ratios, frequencies, saliences, hum_starts, hum_ends
 
 def calculate_hum_features(quantiles, ratios, frequencies, saliences, starts, ends):

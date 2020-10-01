@@ -15,6 +15,9 @@ import soundfile as sf
 import scipy.io.wavfile as wav
 import math
 
+from pydub import AudioSegment
+from pydub.utils import make_chunks
+
 # experiencing 'file not found error' with pydub's AudioSegment...
 # install either of the following libraries
 # libav using 'apt-get install libav-tools libavcodec-extra'
@@ -55,7 +58,7 @@ def record_file(item, write_directory, fs=44100):
 
     return loc
 
-def listen(seconds, fs, directory, overwrite=True):
+def listen(seconds, directory, prefix = '', fs=44100, overwrite=True):
     print("* recording...")
     recording = sd.rec(int(seconds * fs), channels=1)
     sd.wait()
@@ -64,14 +67,25 @@ def listen(seconds, fs, directory, overwrite=True):
     if overwrite:
         loc = directory + "test.wav"
     else:
-        loc = directory + str(int(time())) + ".wav"
+        loc = directory + prefix + str(int(time())) + ".wav"
     wav.write(loc, fs, recording)
 
-    # print("* replaying audio...")
-    # data, _ = sf.read(loc)
-    # sd.play(data, blocking=True)
-
     return loc
+
+def make_clips(sample, directory, name, length = 5000, fs = 44100):
+    myaudio = AudioSegment.from_file(sample, "wav")
+    myaudio = myaudio.set_frame_rate(fs)
+    chunk_length_ms = 5000
+    chunks = make_chunks(myaudio, chunk_length_ms)
+    for i, chunk in enumerate(chunks):
+        chunk_name = name + "{0}.wav".format(i)
+        print("\t* exporting...", chunk_name)
+        chunk.export(directory + name + chunk_name, format="wav")
+
+    print("* writing clips")
+    clips = get_files('experiment/directory/' + name + '/', ['.wav'])
+
+    return clips
 
 def playback(sample, write_directory=''):
     print("* starting playback...")
@@ -126,7 +140,7 @@ def record_directory(items, write_directory, fs = 44100):
 
             # write first-draft recording
             # print(type(recording))
-            wav.write(loc, fs, recording)
+            wav.write(loc, samplerate, recording)
         else:
             print(loc + ' already exists. Skipping replay...')
             # load first-draft recording
@@ -153,6 +167,6 @@ def record_directory(items, write_directory, fs = 44100):
 
 
 # USAGE
-# audio_samples = get_files('notebooks/chime/clips/', ['.wav']) # samples to play and record
+# audio_samples = get_files('notebooks/chime/clips-5s/', ['.wav']) # samples to play and record
 # record_directory(audio_samples, "notebooks/chime/recordings/")
 #listen(5, 44100, 'recordings/', overwrite=False)
