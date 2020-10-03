@@ -96,13 +96,12 @@ def evaluate_classifiers(names, classifiers, dataset, tests, prefix, output):
     y = dataset['target']
     X = QuantileTransformer(output_distribution='normal').fit_transform(X)
     X_train, X_test, y_train, y_test = \
-         train_test_split(X, y, test_size=.5, random_state=42)
+         train_test_split(X, y, test_size=.25, random_state=42)
     print("completing dataset test/train split")
 
     for name, clf in zip(names, classifiers):
         print("CLASSIFIER", clf)
         
-        '''
         selector = SelectKBest(score_func=f_classif)
         results = grid_search(X, y, clf, selector, name, "ANOVA")
 
@@ -112,9 +111,8 @@ def evaluate_classifiers(names, classifiers, dataset, tests, prefix, output):
 
         print("updating k in feature selection")
         k = np.array(list(results.best_params_.values()))[0] # number of features to select
-        '''
 
-        k = 259 #'all'
+        #k = 259
         selector = SelectKBest(score_func=f_classif, k=k)
 
         X_train_fs, X_test_fs, fs = \

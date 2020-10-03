@@ -104,6 +104,7 @@ def main(prefix, exp, sample_directory = 'experiment/samples/'):
                 print("SHAPE:", features.shape)
                 features = features[model_features]#features.reindex(columns=model_features) #features.loc[model_features]
                 print("REFORMED SHAPE: ", features.shape)
+                features.to_csv("experiment/features/" + path_leaf(sample) + ".csv")
 
                 # classify samples
                 prediction = -1
