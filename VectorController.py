@@ -24,10 +24,20 @@ s = "0030431E"
 ipaddr = "10.0.0.120"
 name = "Vector-N5H2"
 print('-------------------------------------------------------')
+
+from pathlib import Path
+
+model_string = Path("ANOVA_KNN_K Nearest Neighbors_features.txt").read_text()
+model_string = model_string.replace('\n', '')
+model_features = model_string.split("&&")
 dataset = pd.read_csv("finalmodel16bit.csv")
+#print(dataset)
+X = dataset[model_features]
+X=X.fillna(0)
+
 dataset = dataset.to_numpy()
 #normally 628
-X = dataset[:,2:152]
+#X = dataset[:,2:152]
 y = dataset[:,1]
 y=y.astype('int')
 
@@ -56,6 +66,10 @@ seconds = 5  # Duration of recording
 
 directory = '/home/nick/Documents/audio_features/'
 
+results_df = pd.DataFrame(columns = ['Experiment', 'Sample', 'Prediction', 'Time Spent'])
+name = 'results1'
+results_csv = "experiment/" + name + ".csv"
+i=0
 with anki_vector.Robot(args.serial) as robot:
 #with anki_vector.Robot(serial=s,ip=ipaddr,name=name) as robot:
     while True:
@@ -69,15 +83,17 @@ with anki_vector.Robot(args.serial) as robot:
         audioRecording = sd.rec(int(seconds * fs), samplerate=fs, channels=2, dtype='int16')
         print("Speak!...it's recording")
         sd.wait()  # Wait until recording is finished
-        write(directory + 'testlive/snippet.wav', fs, audioRecording)
+        write(directory + name + '/snippet.wav', fs, audioRecording)
 
         print("Waiting 300 milliseconds for audio to be saved and chunked up...")
         time.sleep(.300)
 
+        time_start = time.time()
+
         import os
         import pandas as pd
         from joblib import dump,load
-        folder = 'testlive/'
+        folder = name + '/'
         
         for filename in os.listdir(directory + folder):
             if filename.endswith(".wav") or filename.endswith(".mp3"):
@@ -85,15 +101,20 @@ with anki_vector.Robot(args.serial) as robot:
                 allFeatures = audio_extractors.getFeatures(folder+filename)
 
                 
-
+                ourPrediction = -1
                 if(isinstance(allFeatures,str)):
                     print("------------------------------------------------------\n\n\n\n\n\n\n\nSILENT\n\n\n\n\n\n\n\n------------------------------------------------------")
                     hue = 0.11
                     saturation = 1.00
                     robot.behavior.set_eye_color(hue,saturation) #yellow
+                    time_end = time.time()
                     time.sleep(3.0)
                 else:
-                    normData = qt.transform(allFeatures.to_numpy()[:,2:152])
+                    allFeatures = allFeatures[model_features]
+                    allFeatures=allFeatures.fillna(0)
+                    #print(allFeatures)
+                    #normData = qt.transform(allFeatures.to_numpy()[:,2:152])
+                    normData = qt.transform(allFeatures.to_numpy())
                     ourPrediction = model.predict(normData)
                     ourPrediction = int(ourPrediction[0])
 
@@ -102,11 +123,17 @@ with anki_vector.Robot(args.serial) as robot:
                         hue = 0.01
                         saturation = 0.95
                         robot.behavior.set_eye_color(hue,saturation) #red
+                        time_end = time.time()
                         time.sleep(3.0)
                         print("------------------------------------------------------\n\n\n\n\n\n\n\nINTERACTIVE\n\n\n\n\n\n\n\n------------------------------------------------------")
                     else:
                         hue = 0.42
                         saturation = 1.00
                         robot.behavior.set_eye_color(hue,saturation) #green
+                        time_end = time.time()
                         time.sleep(3.0)
                         print("------------------------------------------------------\n\n\n\n\n\n\n\nNOT INTERACTIVE\n\n\n\n\n\n\n\n--------------------------------------------------")
+
+        results_df = results_df.append({'Experiment': name, 'Sample' : i, 'Prediction' : ourPrediction, 'Time Spent' : time_end - time_start}, ignore_index=True) 
+        i+=1
+        results_df.to_csv(results_csv)
